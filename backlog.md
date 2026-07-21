@@ -17,3 +17,17 @@
 
 - Migrate Kwavers volume-renderer lookup tables when its active shared-tree claim closes.
 - Extract repeated CFDrs/Kwavers plot-series assembly onto Iris borrowed views after consumer contract audit.
+
+## IRIS-002 — CFDrs color-law ownership
+
+- Outcome: Iris owns the exact blue-to-red law required by CFDrs, allowing the
+  consumer's duplicated map enum and formulas to be deleted.
+- Scope: one additive map strategy, runtime selection, laws, documentation,
+  and direct CFDrs migration.
+- Non-goals: CFD field interpretation, Plotters rendering, scalar-range
+  reduction, and the actively claimed Kwavers renderer.
+- Acceptance: exhaustive channel laws and exact endpoint/complement tests pass;
+  CFDrs consumes `NamedColorMap` directly and contains no local map enum or
+  color formula.
+- Risk/class: `[arch]` `[minor]` in Iris; `[arch]` `[major]` in CFDrs.
+- Status: in progress.

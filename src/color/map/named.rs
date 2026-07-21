@@ -1,7 +1,8 @@
 //! Closed-set runtime color-map selection.
 
 use super::{
-    Bone, ColorMap, Cool, CoolWarm, Grayscale, Hot, Inverted, Jet, Plasma, Rainbow, Viridis,
+    BlueRed, Bone, ColorMap, Cool, CoolWarm, Grayscale, Hot, Inverted, Jet, Plasma, Rainbow,
+    Viridis,
 };
 use crate::color::{Normalized, Rgba};
 
@@ -30,11 +31,14 @@ pub enum NamedColorMap {
     CoolWarm,
     /// Blue-to-red HSV hue sweep.
     Rainbow,
+    /// Linear blue-to-red map with no neutral midpoint.
+    BlueRed,
 }
 
 impl NamedColorMap {
     /// Built-in maps in stable display order.
-    pub const ALL: [Self; 10] = [
+    pub const ALL: [Self; 11] = [
+        Self::BlueRed,
         Self::Grayscale,
         Self::Inverted,
         Self::Hot,
@@ -51,6 +55,7 @@ impl NamedColorMap {
     #[must_use]
     pub const fn label(self) -> &'static str {
         match self {
+            Self::BlueRed => "Blue-red",
             Self::Grayscale => "Grayscale",
             Self::Inverted => "Inverted",
             Self::Hot => "Hot",
@@ -68,6 +73,7 @@ impl NamedColorMap {
 impl ColorMap for NamedColorMap {
     fn sample(self, value: Normalized) -> Rgba {
         match self {
+            Self::BlueRed => BlueRed.sample(value),
             Self::Grayscale => Grayscale.sample(value),
             Self::Inverted => Inverted.sample(value),
             Self::Hot => Hot.sample(value),

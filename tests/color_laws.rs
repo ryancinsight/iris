@@ -2,7 +2,10 @@
 
 use core::mem::size_of;
 
-use iris::color::{ColorMap, LookupTable, NamedColorMap, Normalized, Rgba, map::Grayscale};
+use iris::color::{
+    ColorMap, LookupTable, NamedColorMap, Normalized, Rgba,
+    map::{BlueRed, Grayscale},
+};
 
 fn normalized(value: f32) -> Normalized {
     Normalized::new(value).expect("test value lies in the unit interval")
@@ -62,7 +65,36 @@ fn grayscale_is_monotone_and_channel_equal() {
 }
 
 #[test]
+fn blue_red_channels_are_exact_complements() {
+    let mut previous_red = 0_u8;
+    let mut previous_blue = u8::MAX;
+
+    for step in 0_u16..=255 {
+        let [red, green, blue, alpha] = BlueRed
+            .sample(Normalized::from_u8(
+                u8::try_from(step).expect("test step is at most 255"),
+            ))
+            .to_rgba8();
+        assert_eq!(green, 0);
+        assert_eq!(u16::from(red) + u16::from(blue), 255);
+        assert!(red >= previous_red);
+        assert!(blue <= previous_blue);
+        assert_eq!(alpha, 255);
+        previous_red = red;
+        previous_blue = blue;
+    }
+}
+
+#[test]
 fn analytic_endpoints_and_control_points_are_exact() {
+    assert_eq!(
+        NamedColorMap::BlueRed.sample(normalized(0.0)).to_rgba8(),
+        [0, 0, 255, 255]
+    );
+    assert_eq!(
+        NamedColorMap::BlueRed.sample(normalized(1.0)).to_rgba8(),
+        [255, 0, 0, 255]
+    );
     assert_eq!(
         NamedColorMap::Grayscale.sample(normalized(0.0)).to_rgba8(),
         [0, 0, 0, 255]
