@@ -51,3 +51,12 @@ non-increasing. On the uniform byte grid, nearest-byte quantization preserves
 - exact endpoint assertions;
 - zero-sized strategy and lookup-table layout checks remain active;
 - differential CFDrs tests compare the public byte-color boundary.
+
+## Outcome
+
+Iris PR 3 merged the provider law as `ef43861a`. CFDrs PR 303 merged the
+direct consumer migration as `394c9977`, deleting its local map enum and
+formulas. CFDrs computes scalar ranges once per overlay, borrows existing
+field maps through `Cow`, and performs constant-time color lookup without a
+per-element range allocation. Atlas owns the independent parent-gitlink
+reconciliation.
