@@ -30,4 +30,9 @@
   CFDrs consumes `NamedColorMap` directly and contains no local map enum or
   color formula.
 - Risk/class: `[arch]` `[minor]` in Iris; `[arch]` `[major]` in CFDrs.
-- Status: in progress.
+- Evidence: Iris PR 3 merged the provider law as `ef43861a`; CFDrs PR 303
+  merged the direct consumer cutover as `394c9977`. The consumer passed 176
+  `cfd-schematics` tests, 10 focused iterator/window tests, 16 doctests,
+  warning-denied Clippy and Rustdoc, feature checks, and a rendered Venturi
+  pressure-field inspection.
+- Status: done.

@@ -23,5 +23,6 @@
 - [x] Pass format, dual-feature checks, warning-denied Clippy, 15/15 Nextest,
       two doctests, warning-denied Rustdoc, examples, cargo-deny, and the
       origin-main SemVer baseline (196/196 checks).
-- [ ] Migrate CFDrs directly and delete its superseded enum and formulas.
-- [ ] Publish both merged defaults and reconcile Atlas gitlinks.
+- [x] Migrate CFDrs directly and delete its superseded enum and formulas.
+- [x] Publish Iris and CFDrs defaults as `ef43861a` and `394c9977`;
+      parent-repository pin reconciliation remains owned by Atlas.
