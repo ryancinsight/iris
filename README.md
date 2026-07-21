@@ -53,6 +53,11 @@ required. Lookup-table resolution and scalar-field rank are const generic.
 Views borrow caller storage, and labels use `Cow<'_, str>` so borrowed metadata
 does not allocate.
 
+The built-in blue-to-red law is the exact linear map
+`c(t) = (t, 0, 1 - t, 1)`. It is intended for consumers that require endpoint
+polarity without a neutral midpoint; `CoolWarm` remains the three-pole
+blue-white-red alternative.
+
 ## Verification
 
 The color invariant follows by induction over each piecewise interval: control

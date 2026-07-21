@@ -8,7 +8,7 @@ mod table;
 
 use super::{Normalized, Rgba};
 
-pub use diverging::CoolWarm;
+pub use diverging::{BlueRed, CoolWarm};
 pub use named::NamedColorMap;
 pub use sequential::{Cool, Grayscale, Hot, Inverted, Rainbow};
 pub use table::{Bone, Jet, Plasma, Viridis};

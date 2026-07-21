@@ -3,6 +3,22 @@
 use super::{ColorMap, interpolation::linear_rgb};
 use crate::color::{Normalized, Rgba};
 
+/// Linear blue-to-red map with no neutral midpoint.
+///
+/// For `t` in `[0, 1]`, this map is defined by
+/// `c(t) = (t, 0, 1 - t, 1)`. Each channel therefore remains normalized, the
+/// red channel is monotone non-decreasing, and the blue channel is monotone
+/// non-increasing.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct BlueRed;
+
+impl ColorMap for BlueRed {
+    fn sample(self, value: Normalized) -> Rgba {
+        let value = value.get();
+        Rgba::opaque([value, 0.0, 1.0 - value])
+    }
+}
+
 /// Piecewise-linear blue-white-red diverging map.
 ///
 /// This is an RGB interpolation contract. It does not claim the perceptual Msh
