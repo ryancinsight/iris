@@ -63,6 +63,15 @@ validity state.
 - negative cardinality and non-finite-input tests;
 - RITK differential tests before deletion of both superseded implementations.
 
+Iris PR 1 merged the consumer-required byte normalization at
+`e2edd47615454111b4b0df2e68dc6076161ba457`. RITK PR 46 merged the direct Snap
+and VTK migration as `1bc665d4c2d56c97e1b2b51e7135e9a86bf14d08` after its
+Rust, Python, and migration-audit matrices passed; PR 47 closed the exact
+merge-result verification and formatting repair as
+`a36e65dfe1d4401d6950ebc31123205b9db04c50`. Atlas PR 71 registered Iris and
+the initial consumer revision at
+`6740296bf1ad45c4ff77dc4e2aaa64e2971e4ecd`.
+
 ## References
 
 - [Matplotlib colormap reference](https://matplotlib.org/stable/gallery/color/colormap_reference.html)
