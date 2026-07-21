@@ -37,6 +37,26 @@ impl Normalized {
         Ok(Self(value))
     }
 
+    /// Convert an 8-bit channel value to its exact unit-interval coordinate.
+    ///
+    /// This is the inverse coordinate transform for the uniform 8-bit grid:
+    /// `n = value / 255`. Every `u8` is exactly representable by `f32`, so the
+    /// result is finite and lies in `[0, 1]` without a runtime validation
+    /// branch.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use iris::color::Normalized;
+    ///
+    /// assert_eq!(Normalized::from_u8(0).get(), 0.0);
+    /// assert_eq!(Normalized::from_u8(255).get(), 1.0);
+    /// ```
+    #[must_use]
+    pub fn from_u8(value: u8) -> Self {
+        Self(f32::from(value) / 255.0)
+    }
+
     /// Return the validated scalar.
     #[must_use]
     pub const fn get(self) -> f32 {

@@ -17,6 +17,22 @@ fn normalization_rejects_non_finite_and_out_of_domain_values() {
 }
 
 #[test]
+fn byte_coordinates_cover_the_uniform_unit_grid_exactly() {
+    let mut previous = Normalized::from_u8(0).get();
+    assert_eq!(previous.to_bits(), 0.0_f32.to_bits());
+
+    for value in 1_u8..=u8::MAX {
+        let actual = Normalized::from_u8(value).get();
+        let expected = f32::from(value) / 255.0;
+        assert_eq!(actual.to_bits(), expected.to_bits());
+        assert!(actual > previous);
+        previous = actual;
+    }
+
+    assert_eq!(previous.to_bits(), 1.0_f32.to_bits());
+}
+
+#[test]
 fn every_named_map_preserves_normalized_rgba_invariant() {
     for map in NamedColorMap::ALL {
         for step in 0_u16..=1024 {
