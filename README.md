@@ -74,6 +74,14 @@ The built-in names and classifications follow the
 implementation of the Msh interpolation in Moreland's
 [Diverging Color Maps for Scientific Visualization](https://www.kennethmoreland.com/color-maps/ColorMaps.pdf).
 
+## Distribution
+
+Published releases are available as [`iris` on crates.io](https://crates.io/crates/iris).
+The `crate-iris-v<version>` GitHub release tag drives the repository's
+crates.io trusted-publishing workflow; the workflow validates the exact tag,
+manifest version, and package contents before requesting a short-lived OIDC
+credential.
+
 ## License
 
 Licensed under either Apache-2.0 or MIT, at your option.
