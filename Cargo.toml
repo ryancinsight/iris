@@ -8,6 +8,7 @@ description = "Domain-neutral scientific visualization contracts for Atlas"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/ryancinsight/iris"
 readme = "README.md"
+publish = true
 keywords = ["visualization", "scientific", "colormap", "rendering"]
 categories = ["graphics", "science", "no-std"]
 

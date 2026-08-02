@@ -1,5 +1,15 @@
 # Checklist
 
+## IRIS-003
+
+- [x] Confirm the `iris` name is not registered on crates.io.
+- [x] Add exact-identity package validation and OIDC publishing automation.
+- [ ] Pass format, feature, lint, Nextest, doctest, documentation, package,
+      and hosted CI gates.
+- [ ] Merge the release automation and publish `iris` 0.1.0.
+- [ ] Configure the exact trusted publisher, enforce trusted-publishing-only,
+      and verify the crates.io index and GitHub Release.
+
 ## IRIS-001
 
 - [x] Confirm the Atlas promotion gate and absence of an existing Iris repository.
