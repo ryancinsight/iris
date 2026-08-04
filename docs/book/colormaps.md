@@ -1,0 +1,3 @@
+# colormaps
+
+*Chapter prose deferred.*
