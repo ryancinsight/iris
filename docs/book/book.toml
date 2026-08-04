@@ -1,0 +1,14 @@
+[book]
+title = "iris: Visualization Contracts for Atlas"
+authors = ["Ryan Clanton"]
+src = "."
+language = "en"
+[build]
+build-dir = "../../target/book/iris"
+create-missing = false
+[output.html]
+no-section-label = false
+mathjax-support = false
+site-url = "/iris/"
+git-repository-url = "https://github.com/ryancinsight/iris"
+default-theme = "rust"
