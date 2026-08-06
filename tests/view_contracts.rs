@@ -56,6 +56,18 @@ fn scalar_field_rejects_cardinality_mismatch() {
 }
 
 #[test]
+fn scalar_field_accepts_empty_zero_extent_and_preserves_storage() {
+    let backing = [7_u16];
+    let values = &backing[..0];
+    let field = ScalarFieldView::new(values, [0, 3]).expect("zero extent has zero cardinality");
+
+    assert_eq!(field.extents(), &[0, 3]);
+    assert!(core::ptr::eq(field.as_slice(), values));
+    assert_eq!(field.values().len(), 0);
+    assert_eq!(ScalarField::shape(&field), &[0, 3]);
+}
+
+#[test]
 fn axis_metadata_can_borrow_or_own() {
     let borrowed = Axis::with_unit("time", "s");
     let owned = Axis::unitless(String::from("iteration"));

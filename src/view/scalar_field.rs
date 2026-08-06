@@ -34,6 +34,11 @@ impl<'a, T, const D: usize> ScalarFieldView<'a, T, D> {
     /// Returns [`IrisError::ShapeCardinalityOverflow`] when the extent product
     /// overflows and [`IrisError::ShapeCardinalityMismatch`] when it differs
     /// from `values.len()`.
+    ///
+    /// Zero extents are valid for empty domains: a shape containing `0` is
+    /// accepted only with an empty `values` slice. The view still borrows that
+    /// slice and its iterator remains empty, so no sentinel allocation is
+    /// needed for an empty field.
     pub fn new(values: &'a [T], shape: [usize; D]) -> IrisResult<Self> {
         const { assert!(D > 0, "scalar fields require positive rank") };
 
