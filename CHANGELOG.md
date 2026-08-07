@@ -15,3 +15,8 @@ All notable changes are documented in this file.
 - Zero-copy series and const-rank scalar-field views.
 - GAT render-backend contract for lending reusable frame storage.
 - ADR, executable examples, law tests, documentation, and CI gates.
+- Document and pin the zero-extent contract for `ScalarFieldView::new`: a
+  shape containing a zero extent is valid only with an empty `values` slice,
+  preserving the borrowed storage pointer with no sentinel allocation. A
+  value-semantic test asserts the empty view keeps its extents, its storage
+  pointer, and its shape.
