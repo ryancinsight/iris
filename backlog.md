@@ -29,8 +29,21 @@
 
 ## Ready after IRIS-001
 
-- Migrate Kwavers volume-renderer lookup tables when its active shared-tree claim closes.
 - Extract repeated CFDrs/Kwavers plot-series assembly onto Iris borrowed views after consumer contract audit.
+
+## IRIS-004 — Kwavers color-law consolidation
+
+- Outcome: migrate Kwavers volume-render transfer functions to Iris so shared
+  visualization laws are owned by one package.
+- Scope: add missing Iris named maps required by Kwavers and remove duplicated
+  map tables from `kwavers-analysis`.
+- Non-goals: Kwavers GPU mechanics, domain interpretation, and plot-series
+  extraction.
+- Acceptance: Iris exposes `Inferno`, `Magma`, and `Turbo` as built-in
+  `NamedColorMap` variants; `kwavers-analysis` consumes Iris `LookupTable` and
+  contains no local implementations for those maps.
+- Risk/class: `[arch]` `[minor]`.
+- Status: done.
 
 ## IRIS-002 — CFDrs color-law ownership
 

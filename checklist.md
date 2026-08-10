@@ -36,3 +36,11 @@
 - [x] Migrate CFDrs directly and delete its superseded enum and formulas.
 - [x] Publish Iris and CFDrs defaults as `ef43861a` and `394c9977`;
       parent-repository pin reconciliation remains owned by Atlas.
+
+## IRIS-004
+
+- [x] Add `Inferno`, `Magma`, and `Turbo` to Iris map strategies and
+      `NamedColorMap` runtime dispatch.
+- [x] Extend Iris color-law tests for the new built-in maps.
+- [x] Migrate `kwavers-analysis` volume-render transfer functions to Iris
+      `LookupTable<NamedColorMap, 256>`.

@@ -1,8 +1,8 @@
 //! Closed-set runtime color-map selection.
 
 use super::{
-    BlueRed, Bone, ColorMap, Cool, CoolWarm, Grayscale, Hot, Inverted, Jet, Plasma, Rainbow,
-    Viridis,
+    BlueRed, Bone, ColorMap, Cool, CoolWarm, Grayscale, Hot, Inferno, Inverted, Jet, Magma, Plasma,
+    Rainbow, Turbo, Viridis,
 };
 use crate::color::{Normalized, Rgba};
 
@@ -31,13 +31,19 @@ pub enum NamedColorMap {
     CoolWarm,
     /// Blue-to-red HSV hue sweep.
     Rainbow,
+    /// Black-purple-red-orange-yellow sequential map.
+    Inferno,
+    /// Black-purple-red-orange-white sequential map.
+    Magma,
+    /// High-dynamic-range rainbow-like sequential map.
+    Turbo,
     /// Linear blue-to-red map with no neutral midpoint.
     BlueRed,
 }
 
 impl NamedColorMap {
     /// Built-in maps in stable display order.
-    pub const ALL: [Self; 11] = [
+    pub const ALL: [Self; 14] = [
         Self::BlueRed,
         Self::Grayscale,
         Self::Inverted,
@@ -47,6 +53,9 @@ impl NamedColorMap {
         Self::Jet,
         Self::Plasma,
         Self::Viridis,
+        Self::Inferno,
+        Self::Magma,
+        Self::Turbo,
         Self::CoolWarm,
         Self::Rainbow,
     ];
@@ -64,6 +73,9 @@ impl NamedColorMap {
             Self::Jet => "Jet",
             Self::Plasma => "Plasma",
             Self::Viridis => "Viridis",
+            Self::Inferno => "Inferno",
+            Self::Magma => "Magma",
+            Self::Turbo => "Turbo",
             Self::CoolWarm => "Cool-warm",
             Self::Rainbow => "Rainbow",
         }
@@ -82,6 +94,9 @@ impl ColorMap for NamedColorMap {
             Self::Jet => Jet.sample(value),
             Self::Plasma => Plasma.sample(value),
             Self::Viridis => Viridis.sample(value),
+            Self::Inferno => Inferno.sample(value),
+            Self::Magma => Magma.sample(value),
+            Self::Turbo => Turbo.sample(value),
             Self::CoolWarm => CoolWarm.sample(value),
             Self::Rainbow => Rainbow.sample(value),
         }

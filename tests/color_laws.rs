@@ -123,6 +123,27 @@ fn analytic_endpoints_and_control_points_are_exact() {
         [0.204, 0.636, 0.469, 1.0].map(f32::to_bits)
     );
     assert_eq!(
+        NamedColorMap::Inferno
+            .sample(normalized(0.0))
+            .channels()
+            .map(f32::to_bits),
+        [0.001, 0.0, 0.014, 1.0].map(f32::to_bits)
+    );
+    assert_eq!(
+        NamedColorMap::Magma
+            .sample(normalized(0.0))
+            .channels()
+            .map(f32::to_bits),
+        [0.001, 0.0, 0.014, 1.0].map(f32::to_bits)
+    );
+    assert_eq!(
+        NamedColorMap::Turbo
+            .sample(normalized(1.0))
+            .channels()
+            .map(f32::to_bits),
+        [0.879, 0.314, 0.065, 1.0].map(f32::to_bits)
+    );
+    assert_eq!(
         NamedColorMap::CoolWarm
             .sample(normalized(0.5))
             .channels()
