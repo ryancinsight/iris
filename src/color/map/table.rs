@@ -242,6 +242,7 @@ impl ColorMap for Magma {
 pub struct Turbo;
 
 impl ColorMap for Turbo {
+    #[allow(clippy::approx_constant)] // 0.318 is a turbo green control point, not a π approximation.
     fn sample(self, value: Normalized) -> Rgba {
         const RED: [(f32, f32); 9] = [
             (0.0, 0.190),
