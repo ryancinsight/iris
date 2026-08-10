@@ -138,3 +138,151 @@ impl ColorMap for Viridis {
         ])
     }
 }
+
+/// Nine-control-point approximation of the inferno palette.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct Inferno;
+
+impl ColorMap for Inferno {
+    fn sample(self, value: Normalized) -> Rgba {
+        const RED: [(f32, f32); 9] = [
+            (0.0, 0.001),
+            (0.125, 0.100),
+            (0.25, 0.276),
+            (0.375, 0.478),
+            (0.5, 0.659),
+            (0.625, 0.821),
+            (0.75, 0.937),
+            (0.875, 0.988),
+            (1.0, 0.988),
+        ];
+        const GREEN: [(f32, f32); 9] = [
+            (0.0, 0.0),
+            (0.125, 0.031),
+            (0.25, 0.044),
+            (0.375, 0.066),
+            (0.5, 0.137),
+            (0.625, 0.268),
+            (0.75, 0.449),
+            (0.875, 0.653),
+            (1.0, 0.880),
+        ];
+        const BLUE: [(f32, f32); 9] = [
+            (0.0, 0.014),
+            (0.125, 0.184),
+            (0.25, 0.397),
+            (0.375, 0.467),
+            (0.5, 0.432),
+            (0.625, 0.326),
+            (0.75, 0.208),
+            (0.875, 0.118),
+            (1.0, 0.381),
+        ];
+
+        let value = value.get();
+        Rgba::opaque([
+            piecewise(value, &RED),
+            piecewise(value, &GREEN),
+            piecewise(value, &BLUE),
+        ])
+    }
+}
+
+/// Nine-control-point approximation of the magma palette.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct Magma;
+
+impl ColorMap for Magma {
+    fn sample(self, value: Normalized) -> Rgba {
+        const RED: [(f32, f32); 9] = [
+            (0.0, 0.001),
+            (0.125, 0.118),
+            (0.25, 0.304),
+            (0.375, 0.504),
+            (0.5, 0.689),
+            (0.625, 0.857),
+            (0.75, 0.974),
+            (0.875, 0.998),
+            (1.0, 0.987),
+        ];
+        const GREEN: [(f32, f32); 9] = [
+            (0.0, 0.0),
+            (0.125, 0.051),
+            (0.25, 0.080),
+            (0.375, 0.119),
+            (0.5, 0.196),
+            (0.625, 0.328),
+            (0.75, 0.524),
+            (0.875, 0.730),
+            (1.0, 0.914),
+        ];
+        const BLUE: [(f32, f32); 9] = [
+            (0.0, 0.014),
+            (0.125, 0.260),
+            (0.25, 0.437),
+            (0.375, 0.500),
+            (0.5, 0.483),
+            (0.625, 0.422),
+            (0.75, 0.384),
+            (0.875, 0.524),
+            (1.0, 0.764),
+        ];
+
+        let value = value.get();
+        Rgba::opaque([
+            piecewise(value, &RED),
+            piecewise(value, &GREEN),
+            piecewise(value, &BLUE),
+        ])
+    }
+}
+
+/// Nine-control-point approximation of the turbo palette.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct Turbo;
+
+impl ColorMap for Turbo {
+    #[allow(clippy::approx_constant)] // 0.318 is a turbo green control point, not a π approximation.
+    fn sample(self, value: Normalized) -> Rgba {
+        const RED: [(f32, f32); 9] = [
+            (0.0, 0.190),
+            (0.125, 0.230),
+            (0.25, 0.160),
+            (0.375, 0.214),
+            (0.5, 0.464),
+            (0.625, 0.739),
+            (0.75, 0.945),
+            (0.875, 0.990),
+            (1.0, 0.879),
+        ];
+        const GREEN: [(f32, f32); 9] = [
+            (0.0, 0.073),
+            (0.125, 0.318),
+            (0.25, 0.519),
+            (0.375, 0.682),
+            (0.5, 0.801),
+            (0.625, 0.872),
+            (0.75, 0.869),
+            (0.875, 0.683),
+            (1.0, 0.314),
+        ];
+        const BLUE: [(f32, f32); 9] = [
+            (0.0, 0.022),
+            (0.125, 0.545),
+            (0.25, 0.698),
+            (0.375, 0.634),
+            (0.5, 0.455),
+            (0.625, 0.260),
+            (0.75, 0.168),
+            (0.875, 0.085),
+            (1.0, 0.065),
+        ];
+
+        let value = value.get();
+        Rgba::opaque([
+            piecewise(value, &RED),
+            piecewise(value, &GREEN),
+            piecewise(value, &BLUE),
+        ])
+    }
+}

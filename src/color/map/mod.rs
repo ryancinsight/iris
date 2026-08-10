@@ -11,7 +11,7 @@ use super::{Normalized, Rgba};
 pub use diverging::{BlueRed, CoolWarm};
 pub use named::NamedColorMap;
 pub use sequential::{Cool, Grayscale, Hot, Inverted, Rainbow};
-pub use table::{Bone, Jet, Plasma, Viridis};
+pub use table::{Bone, Inferno, Jet, Magma, Plasma, Turbo, Viridis};
 
 /// A statically dispatched normalized scalar-to-color law.
 pub trait ColorMap: Copy {
