@@ -1,5 +1,11 @@
 [package]
-name = "iris"
+# Registry name only. crates.io reserves `iris`, so the package is published as
+# `iris-viz` while `[lib] name` keeps the import path `iris` — the same split
+# the stack already uses for `moirai-runtime`, `mnemosyne-memory`, and
+# `themis-topology`. Consumers write
+# `iris = { package = "iris-viz", version = "0.1.0" }` and every `use iris::…`
+# is unchanged.
+name = "iris-viz"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.95"
@@ -11,6 +17,11 @@ readme = "README.md"
 publish = true
 keywords = ["visualization", "scientific", "colormap", "rendering"]
 categories = ["graphics", "science", "no-std"]
+
+[lib]
+# Import path stays `iris` regardless of the registry name above.
+name = "iris"
+path = "src/lib.rs"
 
 [features]
 default = ["std"]
