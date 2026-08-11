@@ -13,6 +13,12 @@
   crate's trusted publisher and trusted-publishing-only mode is enabled.
 - Risk/class: `[patch]` release infrastructure.
 - Status: in progress.
+- Current state (2026-08-11): local repository gates pass in the Atlas
+  checkout (`fmt`, feature checks, warning-denied Clippy, Nextest, doctest,
+  warning-denied Rustdoc, and `cargo package --allow-dirty`). A locked
+  package dry run (`cargo package --locked`) is still blocked in this overlay
+  because Cargo attempts to rewrite `Cargo.lock` under the ambient path-patch
+  graph; hosted CI/publish/trusted-publisher steps remain open.
 
 ## IRIS-001 — Public visualization foundation
 
