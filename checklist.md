@@ -5,7 +5,12 @@
 - [x] Confirm the `iris` name is not registered on crates.io.
 - [x] Add exact-identity package validation and OIDC publishing automation.
 - [ ] Pass format, feature, lint, Nextest, doctest, documentation, package,
-      and hosted CI gates.
+      and hosted CI gates. Local gates now pass (`cargo fmt --check`,
+      `cargo check --all-features`, warning-denied Clippy, 16/16 Nextest,
+      doctests, warning-denied Rustdoc, and `cargo package --allow-dirty`).
+      In the Atlas checkout overlay, `cargo package --locked` remains blocked
+      because Cargo attempts to rewrite `Cargo.lock` under the ambient
+      workspace patch graph.
 - [ ] Merge the release automation and publish `iris` 0.1.0.
 - [ ] Configure the exact trusted publisher, enforce trusted-publishing-only,
       and verify the crates.io index and GitHub Release.
