@@ -3,7 +3,7 @@
 use super::ColorMap;
 use crate::color::{Normalized, Rgba};
 
-/// Monotone grayscale map.
+/// Monotone grayscale map in normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Grayscale;
 
@@ -14,7 +14,7 @@ impl ColorMap for Grayscale {
     }
 }
 
-/// Monotone white-to-black grayscale map.
+/// Monotone white-to-black grayscale map in normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Inverted;
 
@@ -25,7 +25,7 @@ impl ColorMap for Inverted {
     }
 }
 
-/// Black-red-yellow-white sequential map.
+/// Black-red-yellow-white sequential map in normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Hot;
 
@@ -40,7 +40,7 @@ impl ColorMap for Hot {
     }
 }
 
-/// Cyan-to-magenta sequential map.
+/// Cyan-to-magenta sequential map in normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Cool;
 
@@ -51,7 +51,7 @@ impl ColorMap for Cool {
     }
 }
 
-/// Blue-to-red HSV hue sweep.
+/// Blue-to-red HSV hue sweep with normalized sRGB-encoded output channels.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Rainbow;
 

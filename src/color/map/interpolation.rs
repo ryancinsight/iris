@@ -1,4 +1,7 @@
 //! Piecewise-linear interpolation shared by table-defined maps.
+//!
+//! The channel values passed here are normalized sRGB-encoded display values.
+//! These helpers intentionally do not convert to or from linear-light RGB.
 
 pub(super) fn linear(a: f32, b: f32, fraction: f32) -> f32 {
     a + fraction * (b - a)

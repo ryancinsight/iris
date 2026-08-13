@@ -6,38 +6,47 @@ use super::{
 };
 use crate::color::{Normalized, Rgba};
 
-/// Built-in normalized color laws.
+/// Built-in normalized color laws with sRGB-encoded RGB output.
+///
+/// All variants use normalized sRGB-encoded RGB channels and normalized linear
+/// opacity. Their interpolation is not linear-light.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[non_exhaustive]
 pub enum NamedColorMap {
-    /// Monotone black-to-white grayscale.
+    /// Monotone black-to-white grayscale in normalized sRGB-encoded channels.
     Grayscale,
-    /// Monotone white-to-black grayscale.
+    /// Monotone white-to-black grayscale in normalized sRGB-encoded channels.
     Inverted,
-    /// Black-red-yellow-white sequential map.
+    /// Black-red-yellow-white sequential map in normalized sRGB-encoded channels.
     Hot,
-    /// Cyan-to-magenta sequential map.
+    /// Cyan-to-magenta sequential map in normalized sRGB-encoded channels.
     Cool,
-    /// Gray-blue sequential map.
+    /// Gray-blue sequential map in normalized sRGB-encoded channels.
     Bone,
-    /// Blue-cyan-green-yellow-red map.
+    /// Blue-cyan-green-yellow-red map in normalized sRGB-encoded channels.
     Jet,
-    /// Purple-orange-yellow sequential map.
+    /// Purple-orange-yellow sequential map in normalized sRGB-encoded channels.
     Plasma,
-    /// Perceptually ordered purple-green-yellow sequential map.
+    /// Perceptually ordered purple-green-yellow sequential map with normalized
+    /// sRGB-encoded channels.
     Viridis,
-    /// Piecewise-linear blue-white-red diverging map.
+    /// Piecewise-linear blue-white-red diverging map in normalized sRGB-encoded
+    /// channels.
     CoolWarm,
-    /// Blue-to-red HSV hue sweep.
+    /// Blue-to-red HSV hue sweep with normalized sRGB-encoded channels.
     Rainbow,
-    /// Black-purple-red-orange-yellow sequential map.
+    /// Black-purple-red-orange-yellow sequential map in normalized sRGB-encoded
+    /// channels.
     Inferno,
-    /// Black-purple-red-orange-white sequential map.
+    /// Black-purple-red-orange-white sequential map in normalized sRGB-encoded
+    /// channels.
     Magma,
-    /// High-dynamic-range rainbow-like sequential map.
+    /// High-dynamic-range rainbow-like sequential map with normalized
+    /// sRGB-encoded channels.
     Turbo,
-    /// Linear blue-to-red map with no neutral midpoint.
+    /// Linear blue-to-red map with no neutral midpoint in normalized
+    /// sRGB-encoded channels.
     BlueRed,
 }
 

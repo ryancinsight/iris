@@ -5,6 +5,8 @@
 //! maps linearly interpolate adjacent control points, so each output channel
 //! remains inside the convex hull of its bracketing channel values. Since all
 //! control points lie in `[0, 1]`, interpolation preserves the RGBA invariant.
+//! RGB channels are normalized sRGB-encoded display values and alpha is
+//! normalized linear opacity; interpolation is not linear-light RGB.
 
 mod lookup_table;
 pub mod map;

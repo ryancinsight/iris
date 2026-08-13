@@ -1,8 +1,16 @@
-//! Normalized RGBA value.
+//! Normalized RGBA value and its display-channel convention.
+//!
+//! RGB channels are normalized sRGB-encoded display values. Alpha is normalized
+//! linear opacity. Iris does not apply an sRGB transfer function when it
+//! quantizes an [`Rgba`] value to bytes.
 
 use crate::{IrisError, IrisResult};
 
-/// Four normalized red, green, blue, and alpha channels.
+/// Four normalized channels with sRGB RGB and linear-opacity alpha semantics.
+///
+/// The red, green, and blue channels are sRGB-encoded values in `[0, 1]`, not
+/// linear-light intensities. Color-map interpolation therefore also occurs in
+/// encoded sRGB channel space. The alpha channel is normalized linear opacity.
 #[derive(Debug, Clone, Copy, PartialEq)]
 #[repr(transparent)]
 pub struct Rgba([f32; 4]);
@@ -37,6 +45,20 @@ impl Rgba {
     }
 
     /// Convert normalized channels to nearest 8-bit channel values.
+    ///
+    /// RGB values are already sRGB-encoded, so this applies the uniform
+    /// quantizer `round(255v)` directly and performs no transfer-function
+    /// conversion. Alpha uses the same quantizer because it is normalized
+    /// opacity.
+    ///
+    /// ```
+    /// # use iris::color::Rgba;
+    /// let bytes = [0, 128, 255, 128];
+    /// let normalized = bytes.map(|value| f32::from(value) / 255.0);
+    /// let color = Rgba::new(normalized)?;
+    /// assert_eq!(color.to_rgba8(), bytes);
+    /// # Ok::<(), iris::IrisError>(())
+    /// ```
     #[must_use]
     #[expect(
         clippy::cast_possible_truncation,
