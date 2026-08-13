@@ -65,6 +65,14 @@ fn grayscale_is_monotone_and_channel_equal() {
 }
 
 #[test]
+fn rgba8_quantization_preserves_the_srgb_encoding_contract() {
+    let bytes = [0, 128, 255, 128];
+    let color =
+        Rgba::new(bytes.map(|value| f32::from(value) / 255.0)).expect("channels are normalized");
+    assert_eq!(color.to_rgba8(), bytes);
+}
+
+#[test]
 fn blue_red_channels_are_exact_complements() {
     let mut previous_red = 0_u8;
     let mut previous_blue = u8::MAX;

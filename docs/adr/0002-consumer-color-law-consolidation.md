@@ -17,8 +17,10 @@ is outside this increment.
 Add the exact law `c(t) = (t, 0, 1 - t, 1)` as the zero-sized `BlueRed`
 strategy and as a `NamedColorMap` variant. CFDrs consumes `NamedColorMap`
 directly and removes its parallel enum and formulas. Consumer-specific field
-interpretation, scalar-range reduction, byte-color representation, and
-Plotters rendering remain in CFDrs.
+interpretation, scalar-range reduction, and Plotters rendering remain in CFDrs.
+Iris's byte-color representation uses normalized sRGB-encoded RGB channels with
+direct nearest quantization; it does not perform linear-light conversion or
+blending.
 
 The map is additive to Iris. Adding it to the non-exhaustive runtime enum does
 not break external exhaustive matching. The new variant is appended so every

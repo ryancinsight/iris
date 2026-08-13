@@ -8,7 +8,8 @@ use crate::color::{Normalized, Rgba};
 /// For `t` in `[0, 1]`, this map is defined by
 /// `c(t) = (t, 0, 1 - t, 1)`. Each channel therefore remains normalized, the
 /// red channel is monotone non-decreasing, and the blue channel is monotone
-/// non-increasing.
+/// non-increasing. RGB values use normalized sRGB encoding; this law is not a
+/// linear-light interpolation.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct BlueRed;
 
@@ -22,7 +23,8 @@ impl ColorMap for BlueRed {
 /// Piecewise-linear blue-white-red diverging map.
 ///
 /// This is an RGB interpolation contract. It does not claim the perceptual Msh
-/// interpolation of Moreland's full cool-to-warm algorithm.
+/// interpolation of Moreland's full cool-to-warm algorithm. Its RGB values use
+/// normalized sRGB encoding, so interpolation is not linear-light.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CoolWarm;
 

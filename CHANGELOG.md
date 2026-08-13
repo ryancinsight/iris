@@ -6,6 +6,9 @@ All notable changes are documented in this file.
 
 ### Added
 
+- The normalized sRGB-encoded RGB and linear-opacity alpha convention, direct
+  `round(255v)` byte quantization, and the non-linear-light interpolation
+  contract are now documented and tested.
 - A crates.io trusted-publishing workflow for the `iris` package.
 - A zero-sized linear blue-to-red color-map strategy and corresponding
   runtime-selection variant for direct CFDrs integration.

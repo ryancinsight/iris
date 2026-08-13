@@ -3,7 +3,8 @@
 use super::{ColorMap, interpolation::piecewise};
 use crate::color::{Normalized, Rgba};
 
-/// Gray-blue sequential map approximating the standard bone palette.
+/// Gray-blue sequential map approximating the standard bone palette in
+/// normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Bone;
 
@@ -27,7 +28,8 @@ impl ColorMap for Bone {
     }
 }
 
-/// Blue-cyan-green-yellow-red map approximating the standard jet palette.
+/// Blue-cyan-green-yellow-red map approximating the standard jet palette in
+/// normalized sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Jet;
 
@@ -65,7 +67,8 @@ impl ColorMap for Jet {
     }
 }
 
-/// Five-control-point approximation of the plasma palette.
+/// Five-control-point approximation of the plasma palette in normalized
+/// sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Plasma;
 
@@ -102,7 +105,8 @@ impl ColorMap for Plasma {
     }
 }
 
-/// Five-control-point approximation of the viridis palette.
+/// Five-control-point approximation of the viridis palette in normalized
+/// sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Viridis;
 
@@ -139,7 +143,8 @@ impl ColorMap for Viridis {
     }
 }
 
-/// Nine-control-point approximation of the inferno palette.
+/// Nine-control-point approximation of the inferno palette in normalized
+/// sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Inferno;
 
@@ -188,7 +193,8 @@ impl ColorMap for Inferno {
     }
 }
 
-/// Nine-control-point approximation of the magma palette.
+/// Nine-control-point approximation of the magma palette in normalized
+/// sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Magma;
 
@@ -237,7 +243,8 @@ impl ColorMap for Magma {
     }
 }
 
-/// Nine-control-point approximation of the turbo palette.
+/// Nine-control-point approximation of the turbo palette in normalized
+/// sRGB-encoded channel space.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Turbo;
 

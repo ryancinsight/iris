@@ -29,6 +29,10 @@ Dependency direction is consumer to Iris. Iris has no dependency on a solver,
 array, GPU, UI, or format crate. Static map strategies and render backends
 monomorphize; `NamedColorMap` is the closed-set runtime selection boundary.
 
+`Rgba` uses normalized sRGB-encoded RGB display channels and normalized linear
+opacity. Built-in map interpolation stays in encoded RGB space; byte output is
+direct nearest quantization, with no implicit transfer-function conversion.
+
 The first consumer migration replaces the duplicated color-law computations in
 RITK's `ritk-snap` and `ritk-vtk` packages. The Kwavers copy remains a separately
 scoped migration because its current working tree is actively owned.

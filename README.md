@@ -5,6 +5,12 @@ It owns normalized color laws, fixed-size color lookup tables, borrowed result
 views, and the static render-backend seam. Physics, arrays, GPU mechanics, and
 file formats remain in their existing providers.
 
+`Rgba` stores normalized sRGB-encoded red, green, and blue display channels and
+normalized linear opacity. Built-in maps and their interpolation operate in
+that encoded RGB space; `Rgba::to_rgba8` applies direct nearest-byte
+quantization and does not perform an sRGB transfer. Consumers that require
+linear-light blending must convert at their own domain boundary.
+
 ```rust
 use iris::color::{ColorMap, NamedColorMap, Normalized};
 

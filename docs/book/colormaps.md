@@ -17,6 +17,14 @@ pub trait ColorMap: Copy {
 `[0, 1]` — and returns an `Rgba` struct (four normalized `f32` channels). The
 `Copy` bound means maps are cheap to pass by value and store inline.
 
+The RGB channels are normalized sRGB-encoded display values, while alpha is
+normalized linear opacity. Built-in maps and interpolation operate in encoded
+sRGB channel space, not linear-light RGB. `Rgba::to_rgba8` therefore applies
+`round(255v)` directly without an additional transfer function. A consumer that
+needs physically meaningful light or energy blending must convert to
+linear-light RGB before that operation and encode the result at its output
+boundary.
+
 ## `Normalized` Input
 
 [`Normalized`] wraps a `f32` that has been validated to be finite and in
@@ -29,7 +37,8 @@ let n = Normalized::from_u8(192);    // exact: 192 / 255, no validation branch
 
 ## `Rgba` Output
 
-[`Rgba`] wraps `[f32; 4]` (RGBA channels, each in `[0, 1]`).
+[`Rgba`] wraps `[f32; 4]`. RGB channels are normalized sRGB-encoded values and
+alpha is normalized linear opacity; every channel remains in `[0, 1]`.
 
 ## Built-In Named Maps
 
@@ -79,7 +88,7 @@ let color = map.sample(Normalized::from_u8(128));
 Maps such as `Viridis`, `Inferno`, `Plasma`, `Magma`, `Turbo`, `Jet`, and
 `Bone` are implemented as [`LookupTable`] instances — a fixed-size array of
 pre-computed control points. `sample` linearly interpolates between the two
-nearest entries, so each output channel lies in the convex hull of its
+nearest entries in normalized sRGB-encoded RGB space, so each output channel lies in the convex hull of its
 bracketing control values. Since all control points are in `[0, 1]`, the RGBA
 invariant is preserved under interpolation.
 
