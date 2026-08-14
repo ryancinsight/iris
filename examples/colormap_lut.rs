@@ -1,5 +1,7 @@
 //! Build and print a fixed-size Viridis lookup table.
 
+#![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
+
 use iris::color::{LookupTable, NamedColorMap};
 
 fn main() {
