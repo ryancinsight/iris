@@ -73,6 +73,23 @@ fn rgba8_quantization_preserves_the_srgb_encoding_contract() {
 }
 
 #[test]
+fn byte_round_trip_is_exact_across_the_whole_channel_domain() {
+    // The documented quantizer is q(v) = round(255v) with no transfer
+    // function, so b/255 must return to b for every one of the 256 byte
+    // values -- the domain is small enough to check exhaustively rather than
+    // sample.
+    for byte in 0..=u8::MAX {
+        let channels = [f32::from(byte); 4];
+        let color = Rgba::new(channels.map(|value| value / 255.0)).expect("channel is normalized");
+        assert_eq!(
+            color.to_rgba8(),
+            [byte; 4],
+            "round trip diverged at byte {byte}"
+        );
+    }
+}
+
+#[test]
 fn blue_red_channels_are_exact_complements() {
     let mut previous_red = 0_u8;
     let mut previous_blue = u8::MAX;
