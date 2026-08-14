@@ -6,6 +6,5 @@
 
 | ADR | Title | Status |
 | --- | ----- | ------ |
-| [0001](0001-domain-neutral-visualization-contract.md) | Domain-neutral visualization contract | — |
-| [0002](0002-consumer-color-law-consolidation.md) | Consumer color-law consolidation | — |
-| [—](INDEX.md) | Iris architecture decisions | — |
+| [0001](0001-domain-neutral-visualization-contract.md) | Domain-neutral visualization contract | Accepted |
+| [0002](0002-consumer-color-law-consolidation.md) | Consumer color-law consolidation | Accepted |

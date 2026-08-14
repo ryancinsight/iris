@@ -49,3 +49,9 @@
 - [x] Extend Iris color-law tests for the new built-in maps.
 - [x] Migrate `kwavers-analysis` volume-render transfer functions to Iris
       `LookupTable<NamedColorMap, 256>`.
+
+## IRIS-005
+
+- [x] Regenerate `docs/adr/README.md` from the two canonical `Accepted` ADR
+      headers and remove the stale manual `INDEX.md` row from the generated
+      index.

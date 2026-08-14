@@ -51,6 +51,20 @@
 - Risk/class: `[arch]` `[minor]`.
 - Status: done.
 
+## IRIS-005 — ADR index governance slice
+
+- Outcome: synchronize the generated ADR index with Iris's canonical ADR
+  headers.
+- Scope: `docs/adr/README.md`, the provider checklist, and this backlog entry.
+- Non-goals: no ADR decision changes and no changes to the manual architecture
+  overview `docs/adr/INDEX.md`.
+- Acceptance: the generated index lists ADR 0001 and 0002 as `Accepted` and
+  excludes the non-ADR `INDEX.md` overview.
+- Risk/class: `[patch]` documentation cleanup.
+- Evidence: both ADR files already carry `Status: Accepted`; the index now
+  matches the generator's canonical output.
+- Status: done 2026-08-14.
+
 ## IRIS-002 — CFDrs color-law ownership
 
 - Outcome: Iris owns the exact blue-to-red law required by CFDrs, allowing the
