@@ -9,16 +9,19 @@
 - Non-goals: version changes, additional packages, or consumer dependency
   updates.
 - Acceptance: local package and repository gates pass; hosted CI passes; the
-  merged `iris-viz` package is indexed on crates.io; the exact GitHub workflow is the
-  crate's trusted publisher and trusted-publishing-only mode is enabled.
+  merged `iris-viz` package is indexed on crates.io; the exact GitHub workflow is
+  the crate's trusted publisher and trusted-publishing-only mode is enabled.
 - Risk/class: `[patch]` release infrastructure.
 - Status: in progress.
-- Current state (2026-08-11): local repository gates pass in the Atlas
-  checkout (`fmt`, feature checks, warning-denied Clippy, Nextest, doctest,
-  warning-denied Rustdoc, and `cargo package --allow-dirty`). A locked
-  package dry run (`cargo package --locked`) is still blocked in this overlay
-  because Cargo attempts to rewrite `Cargo.lock` under the ambient path-patch
-  graph; hosted CI/publish/trusted-publisher steps remain open.
+- Current state (2026-08-15, audited pre-change `origin/main` `bc47ce3`): the
+  package identity is synchronized as registry package `iris-viz` with Rust
+  import path `iris`, and hosted provider CI passes in run `31865323610`. A
+  locked package dry run (`cargo package --locked`) and locked documentation
+  build remain blocked in the Atlas checkout because Cargo attempts to rewrite
+  `Cargo.lock` under the ambient path-patch graph. The hosted release run
+  `31462641512` reached the OIDC token step but failed with HTTP 400 because no
+  trusted publishing configuration exists for `ryancinsight/iris`; this is an
+  external release blocker, not fixed by the provider documentation update.
 
 ## IRIS-001 — Public visualization foundation
 

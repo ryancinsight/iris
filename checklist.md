@@ -14,7 +14,10 @@
       workspace patch graph.
 - [ ] Merge the release automation and publish `iris-viz` 0.1.0.
 - [ ] Configure the exact trusted publisher, enforce trusted-publishing-only,
-      and verify the crates.io index and GitHub Release.
+      and verify the crates.io index and GitHub Release. External blocker:
+      hosted release run `31462641512` failed at the OIDC token step with
+      `No Trusted Publishing config found for repository ryancinsight/iris`;
+      this repository change does not configure or claim to fix that setting.
 
 ## IRIS-001
 
