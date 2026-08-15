@@ -82,8 +82,8 @@ implementation of the Msh interpolation in Moreland's
 
 ## Distribution
 
-Published releases are available as [`iris` on crates.io](https://crates.io/crates/iris).
-The `crate-iris-v<version>` GitHub release tag drives the repository's
+Published releases are available as [`iris-viz` on crates.io](https://crates.io/crates/iris-viz).
+The `crate-iris-viz-v<version>` GitHub release tag drives the repository's
 crates.io trusted-publishing workflow; the workflow validates the exact tag,
 manifest version, and package contents before requesting a short-lived OIDC
 credential.

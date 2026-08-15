@@ -9,7 +9,8 @@ All notable changes are documented in this file.
 - The normalized sRGB-encoded RGB and linear-opacity alpha convention, direct
   `round(255v)` byte quantization, and the non-linear-light interpolation
   contract are now documented and tested.
-- A crates.io trusted-publishing workflow for the `iris` package.
+- A crates.io trusted-publishing workflow for the `iris-viz` package; the Rust
+  import path remains `iris`.
 - A zero-sized linear blue-to-red color-map strategy and corresponding
   runtime-selection variant for direct CFDrs integration.
 - Inferno, magma, and turbo built-in color-map strategies and runtime variants

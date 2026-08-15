@@ -2,7 +2,8 @@
 
 ## IRIS-003
 
-- [x] Confirm the `iris` name is not registered on crates.io.
+- [x] Confirm the `iris` name is not registered on crates.io; the registry
+      package identity is `iris-viz` and the Rust import path remains `iris`.
 - [x] Add exact-identity package validation and OIDC publishing automation.
 - [ ] Pass format, feature, lint, Nextest, doctest, documentation, package,
       and hosted CI gates. Local gates now pass (`cargo fmt --check`,
@@ -11,7 +12,7 @@
       In the Atlas checkout overlay, `cargo package --locked` remains blocked
       because Cargo attempts to rewrite `Cargo.lock` under the ambient
       workspace patch graph.
-- [ ] Merge the release automation and publish `iris` 0.1.0.
+- [ ] Merge the release automation and publish `iris-viz` 0.1.0.
 - [ ] Configure the exact trusted publisher, enforce trusted-publishing-only,
       and verify the crates.io index and GitHub Release.
 

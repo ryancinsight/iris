@@ -2,14 +2,14 @@
 
 ## IRIS-003 — Crates.io release automation
 
-- Outcome: publish `iris` from GitHub Releases without a long-lived registry
+- Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
   token in repository secrets.
 - Scope: package metadata, exact release identity validation, package dry-run,
   crates.io OIDC trusted publishing, and distribution documentation.
 - Non-goals: version changes, additional packages, or consumer dependency
   updates.
 - Acceptance: local package and repository gates pass; hosted CI passes; the
-  merged package is indexed on crates.io; the exact GitHub workflow is the
+  merged `iris-viz` package is indexed on crates.io; the exact GitHub workflow is the
   crate's trusted publisher and trusted-publishing-only mode is enabled.
 - Risk/class: `[patch]` release infrastructure.
 - Status: in progress.
