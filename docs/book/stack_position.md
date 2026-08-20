@@ -15,7 +15,7 @@ file-format encoding. Those stay with their respective providers.
 
 ## Where Iris Sits
 
-```
+```text
 eunomia ──► aequitas ──► ... solvers (helios, kwavers, CFDrs, ritk) ...
                                │
                                ▼

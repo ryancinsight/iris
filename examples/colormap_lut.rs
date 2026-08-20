@@ -2,6 +2,8 @@
 
 #![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
 
+extern crate iris;
+
 use iris::color::{LookupTable, NamedColorMap};
 
 fn main() {
