@@ -111,3 +111,45 @@ impl ColorMap for NamedColorMap {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::NamedColorMap;
+
+    const fn variant_index(map: NamedColorMap) -> usize {
+        match map {
+            NamedColorMap::BlueRed => 0,
+            NamedColorMap::Grayscale => 1,
+            NamedColorMap::Inverted => 2,
+            NamedColorMap::Hot => 3,
+            NamedColorMap::Cool => 4,
+            NamedColorMap::Bone => 5,
+            NamedColorMap::Jet => 6,
+            NamedColorMap::Plasma => 7,
+            NamedColorMap::Viridis => 8,
+            NamedColorMap::CoolWarm => 9,
+            NamedColorMap::Rainbow => 10,
+            NamedColorMap::Inferno => 11,
+            NamedColorMap::Magma => 12,
+            NamedColorMap::Turbo => 13,
+        }
+    }
+
+    #[test]
+    fn all_contains_each_variant_once() {
+        let mut seen = [false; NamedColorMap::ALL.len()];
+        for map in NamedColorMap::ALL {
+            let index = variant_index(map);
+            let slot = seen
+                .get_mut(index)
+                .expect("every variant index fits the ALL array");
+            assert!(!*slot, "NamedColorMap::ALL repeats {}", map.label());
+            *slot = true;
+        }
+
+        assert!(
+            seen.into_iter().all(|present| present),
+            "NamedColorMap::ALL omits a variant"
+        );
+    }
+}
