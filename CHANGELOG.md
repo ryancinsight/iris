@@ -26,3 +26,6 @@ All notable changes are documented in this file.
   preserving the borrowed storage pointer with no sentinel allocation. A
   value-semantic test asserts the empty view keeps its extents, its storage
   pointer, and its shape.
+- Add an exhaustive defining-module law test that rejects duplicate or omitted
+  entries in `NamedColorMap::ALL` while retaining the public enum's
+  `#[non_exhaustive]` compatibility contract.
