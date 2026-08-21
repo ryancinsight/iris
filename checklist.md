@@ -74,9 +74,13 @@ documentation and hygiene.
       table-defined maps are not `LookupTable` instances, and `LookupTable`
       selects the nearest entry rather than interpolating; `RenderBackend` is
       generic over the view type, not over `ColorMap`.
-- [ ] IRIS-007 — add the exhaustive-`match` coverage test for
+- [x] IRIS-007 — add the exhaustive-`match` coverage test for
       `NamedColorMap::ALL`. Smallest item, and it guards every later map
-      change.
+      change. **Already landed**: `all_contains_each_variant_once` in
+      `src/color/map/named.rs` walks `ALL`, indexes each variant through the
+      exhaustive `variant_index` match, and asserts both that no variant
+      repeats and that none is omitted. Verified 2026-08-25 against the test
+      as it stands, not against a claim about it.
 - [ ] IRIS-006 — commit the published reference channel tables as a fixture,
       derive the per-channel bound, and assert each table-defined map against
       it. A deviation beyond the derived bound is a control-point defect to
