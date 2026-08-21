@@ -59,3 +59,9 @@
 - [x] Regenerate `docs/adr/README.md` from the two canonical `Accepted` ADR
       headers and remove the stale manual `INDEX.md` row from the generated
       index.
+
+## IRIS-007
+
+- [ ] Record the corrected defining-module scope for exhaustive enum coverage.
+- [ ] Verify the already-landed `NamedColorMap::ALL` test with focused gates.
+- [ ] Push the PM synchronization and record exact-head hosted results.
