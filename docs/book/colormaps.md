@@ -83,14 +83,24 @@ let color = map.sample(Normalized::from_u8(128));
 |---------|-------------|
 | `Jet` | Blue-cyan-green-yellow-red |
 
-## Lookup-Table Maps
+## Table-Defined Maps
 
-Maps such as `Viridis`, `Inferno`, `Plasma`, `Magma`, `Turbo`, `Jet`, and
-`Bone` are implemented as [`LookupTable`] instances — a fixed-size array of
-pre-computed control points. `sample` linearly interpolates between the two
-nearest entries in normalized sRGB-encoded RGB space, so each output channel lies in the convex hull of its
-bracketing control values. Since all control points are in `[0, 1]`, the RGBA
-invariant is preserved under interpolation.
+`Viridis`, `Inferno`, `Plasma`, `Magma`, `Turbo`, `Jet`, and `Bone` are
+table-defined: each stores three per-channel control-point tables, and `sample`
+evaluates a piecewise-linear interpolation between the two bracketing control
+points in normalized sRGB-encoded RGB space. Each output channel therefore lies
+in the convex hull of its bracketing control values, and since all control
+points are in `[0, 1]`, the RGBA invariant is preserved under interpolation.
+
+## `LookupTable`
+
+[`LookupTable`] is a separate, optional cache, `LookupTable<M, N>`, built from
+any `ColorMap` via `LookupTable::from_map`. It stores `N` entries sampled
+uniformly across `[0, 1]`, including both endpoints, and `M` is type-level
+evidence only — the
+strategy adds no runtime storage. `LookupTable::sample` selects the *nearest*
+of those `N` entries; it does not interpolate between them, so table resolution
+sets the quantization step of the cached law.
 
 ## Custom Maps
 
@@ -107,5 +117,8 @@ impl iris::color::ColorMap for MyMap {
 }
 ```
 
-The `RenderBackend` trait is generic over any `ColorMap`, so custom maps compose
-with the rest of the rendering pipeline without changes to Iris internals.
+A custom map composes with the rest of Iris without changes to its internals:
+`LookupTable::from_map` accepts it, and any consumer generic over `M: ColorMap`
+monomorphizes to it. The `RenderBackend` trait is generic over the *view* type
+it renders, not over a color map, so map selection stays on the consumer's side
+of the seam.
