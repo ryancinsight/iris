@@ -40,6 +40,22 @@
 
 - Extract repeated CFDrs/Kwavers plot-series assembly onto Iris borrowed views after consumer contract audit.
 
+## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant [verification] [patch] — done 2026-08-21
+
+- **Owner:** Codex; branch `fix/iris-map-coverage`.
+- **Scope:** the completeness test in `src/color/map/named.rs`, this backlog,
+  and the provider checklist.
+- **Correction to the original audit item:** an integration test in
+  `tests/color_laws.rs` cannot exhaustively match the public
+  `#[non_exhaustive]` enum. The defining module is the only sound location for
+  the no-wildcard match while preserving the public forward-compatibility
+  contract.
+- **Acceptance:** adding a variant requires a new exhaustive-match arm, and
+  the test rejects duplicates or omissions in `NamedColorMap::ALL`.
+- **Evidence:** the defining-module test exhaustively matches all 14 variants,
+  rejects duplicate or omitted entries, and passes with 19/19 Nextest tests,
+  warning-denied Clippy, three doctests, and warning-clean Rustdoc.
+
 ## IRIS-004 — Kwavers color-law consolidation
 
 - Outcome: migrate Kwavers volume-render transfer functions to Iris so shared
