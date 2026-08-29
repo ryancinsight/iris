@@ -25,6 +25,17 @@ jobs:
           toolchain: 1.95.0
           components: clippy,rustfmt
       - uses: taiki-e/install-action@4f74fa8a3d358e568049b7b1a7fbb4fceabda454 # nextest
+      # Shared-key rust-cache so the check/clippy/test/doctest/doc build is
+      # warm across PRs instead of rebuilding from scratch each time. The
+      # entry is written from main only (concurrent branches cannot evict
+      # it); invalidation is incremental, so a dependency repin rebuilds only
+      # the affected crates. Mirrors CFDrs #375 / ritk #211 / helios #75 /
+      # themis #32 under ATLAS-CI-RUNNER-SATURATION.
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+        with:
+          workspaces: .
+          shared-key: iris
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - run: cargo fmt --check
       - run: cargo check --all-features
       - run: cargo check --no-default-features
