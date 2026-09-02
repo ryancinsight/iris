@@ -275,7 +275,7 @@
 - Dependencies: none.
 - Risk/change class: `[verification]` `[patch]`.
 - Effort: S.
-- Status: todo.
+- Status: done 2026-09-02 (PR #23). `ci.yml` gains an `msrv` job with `RUSTUP_TOOLCHAIN: 1.95.0` — the variable outranks the committed pin, which the confirmed rustup precedence (`dtolnay/rust-toolchain` only installs and sets a default) had let override every earlier `toolchain: 1.95.0` request — a `rustc --version` proof step, and `cargo check --locked --workspace --all-features --all-targets`. `verify` and `supply-chain` now state the 1.97.0 they always ran. A red `msrv` job is a real floor violation: fix the crate or raise `rust-version`, never drop the override. Stack class: atlas `ATLAS-MSRV-JOBS-OVERRIDDEN-2026-09-02`.
 
 ## IRIS-014 — Ground the book's consumer table in evidence
 

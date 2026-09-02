@@ -122,10 +122,9 @@ have it in `backlog.md` (IRIS-006 … IRIS-015 detail this as IRIS-014).
 
 IRIS-009 and IRIS-012 closed in PR #22: the ADR index check runs in CI through atlas's
 reusable `adr-index-guard.yml` (the generator the README header names lives in
-atlas), and the parallel `docs/adr/INDEX.md` is deleted, leaving one index. `.github/workflows/ci.yml:25,45` request toolchain 1.95.0 while
-`rust-toolchain.toml:2` pins 1.97.0; a committed toolchain file is a rustup
-directory override, so the `Cargo.toml:12` MSRV floor is probably not
-exercised by any job (IRIS-013). `src/error.rs:75-76` gates the error trait on
+atlas), and the parallel `docs/adr/INDEX.md` is deleted, leaving one index. IRIS-013 closed in PR #23: the `msrv` job pins its toolchain through `RUSTUP_TOOLCHAIN`
+(the only selection a committed `rust-toolchain.toml` does not outrank) and prints
+`rustc --version`, so the `Cargo.toml` floor is exercised on every run. `src/error.rs:75-76` gates the error trait on
 the `std` feature although the crate advertises `no_std` support at
 `src/lib.rs:7-8` and `core::error::Error` is long stable below the declared
 floor (IRIS-010). `src/color/normalized.rs:56` is the crate's only
