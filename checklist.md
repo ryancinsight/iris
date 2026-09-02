@@ -57,7 +57,7 @@
 ## IRIS-005
 
 - [x] Regenerate `docs/adr/README.md` from the two canonical `Accepted` ADR
-      headers and remove the stale manual `INDEX.md` row from the generated
+      headers and remove the stale manual overview row from the generated
       index.
 
 ## gap-audit-2026-08-20 (owner: atlas-gap-audit)
@@ -95,8 +95,9 @@ documentation and hygiene.
       `core::error::Error` and assert it under `--no-default-features`.
 - [ ] IRIS-013 — read `rustc --version` from a hosted CI run, confirm which
       toolchain the jobs actually use, then make the MSRV job exercise 1.95.
-- [ ] IRIS-009 and IRIS-012 — decide the ADR index output set once: restore or
+- [x] IRIS-009 and IRIS-012 — decide the ADR index output set once: restore or
       retire the generator, then delete the duplicate `docs/adr/INDEX.md`.
+      Done in PR #22: the shared atlas guard is the generator; the duplicate is gone.
 - [ ] IRIS-014 — verify each consumer row in
       `docs/book/stack_position.md` against that repository's manifest; drop or
       mark prospective the rows without evidence.
