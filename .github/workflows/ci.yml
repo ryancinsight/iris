@@ -13,6 +13,15 @@ permissions:
   contents: read
 
 jobs:
+  adr-index:
+    name: ADR index is current
+    # atlas owns the one generator (ATLAS-ADR-FORM-NORMALIZATION-2026-09-02); strict: the ADRs carry the canonical heading form and numbering.
+    uses: ryancinsight/atlas/.github/workflows/adr-index-guard.yml@63df9d16547db83683980924493e8021db71fffc
+    permissions:
+      contents: read
+    with:
+      strict: true
+
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 30
