@@ -75,10 +75,9 @@
 - Outcome: synchronize the generated ADR index with Iris's canonical ADR
   headers.
 - Scope: `docs/adr/README.md`, the provider checklist, and this backlog entry.
-- Non-goals: no ADR decision changes and no changes to the manual architecture
-  overview `docs/adr/INDEX.md`.
+- Non-goals: no ADR decision changes.
 - Acceptance: the generated index lists ADR 0001 and 0002 as `Accepted` and
-  excludes the non-ADR `INDEX.md` overview.
+  excludes non-ADR files.
 - Risk/class: `[patch]` documentation cleanup.
 - Evidence: both ADR files already carry `Status: Accepted`; the index now
   matches the generator's canonical output.
@@ -194,7 +193,7 @@
 - Dependencies: none.
 - Risk/change class: `[docs]` `[patch]`.
 - Effort: S.
-- Status: todo.
+- Status: done 2026-09-02 (PR #22). The generator exists: atlas's `scripts/adr-index.py`, run through the reusable `adr-index-guard.yml` as the `adr-index` job in `ci.yml` (strict form); the check fails on a hand-edited index, and `docs/adr/README.md` is byte-identical to its output. The header still names `scripts/adr-index.py` — the atlas generator's own emitted text, changing stack-wide under atlas `ATLAS-ADR-FORM-NORMALIZATION-2026-09-02`.
 
 ## IRIS-010 — Implement the error trait unconditionally
 
@@ -254,7 +253,7 @@
 - Dependencies: sequence with IRIS-009 so the index output set is decided once.
 - Risk/change class: `[pm-hygiene]` `[patch]`.
 - Effort: S.
-- Status: todo.
+- Status: done 2026-09-02 (PR #22). `docs/adr/INDEX.md` deleted; its per-ADR decision one-liners restate each ADR body's Decision section, so nothing folds. No repository file references it.
 
 ## IRIS-013 — Make CI actually exercise the declared MSRV floor
 
