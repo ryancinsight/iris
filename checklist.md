@@ -85,9 +85,12 @@ documentation and hygiene.
       derive the per-channel bound, and assert each table-defined map against
       it. A deviation beyond the derived bound is a control-point defect to
       root-cause in `src/color/map/table.rs`, never a widened bound.
-- [ ] IRIS-008 — implement the view-to-frame backend over
+- [x] IRIS-008 — implement the view-to-frame backend over
       `ScalarFieldView` and `LookupTable`, asserting frame bytes and storage
-      reuse.
+      reuse. `tests/view_contracts.rs` now supplies a grayscale backend with
+      two input-sensitive byte oracles and a same-allocation assertion; focused
+      locked Nextest, Clippy, fmt, no-default-features, doctests and Rustdoc
+      pass.
 - [ ] IRIS-011 — replace `Normalized::from_u8` with `impl From<u8>`, converting
       every in-repo call site in the same change. Sequence before the first
       `iris-viz` publish or accept the major bump.
