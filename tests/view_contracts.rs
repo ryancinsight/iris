@@ -2,6 +2,7 @@
 
 use iris::{
     IrisError,
+    color::{LookupTable, Normalized, map::Grayscale},
     render::RenderBackend,
     view::{Axis, ScalarField, ScalarFieldView, SeriesView},
 };
@@ -101,4 +102,64 @@ fn render_backend_lends_reused_frame_storage() {
         .render(&[3, 1, 4, 1])
         .expect("backend is infallible");
     assert_eq!(frame, &[3, 1, 4, 1]);
+}
+
+struct ScalarColorBackend<const N: usize> {
+    colors: LookupTable<Grayscale, N>,
+    frame: Vec<u8>,
+}
+
+impl<'view, const N: usize> RenderBackend<ScalarFieldView<'view, f32, 2>>
+    for ScalarColorBackend<N>
+{
+    type Error = IrisError;
+    type Frame<'frame>
+        = &'frame [u8]
+    where
+        Self: 'frame;
+
+    fn render<'frame>(
+        &'frame mut self,
+        view: &ScalarFieldView<'view, f32, 2>,
+    ) -> Result<Self::Frame<'frame>, Self::Error> {
+        self.frame.clear();
+        for value in view.values().copied() {
+            let normalized = Normalized::new(value)?;
+            self.frame
+                .extend_from_slice(&self.colors.sample(normalized).to_rgba8());
+        }
+        Ok(self.frame.as_slice())
+    }
+}
+
+#[test]
+fn render_backend_maps_scalar_view_and_reuses_rgba_storage() {
+    let first_values = [0.0_f32, 0.5, 1.0, 0.25];
+    let first = ScalarFieldView::new(&first_values, [2, 2]).expect("shape cardinality matches");
+    let second_values = [1.0_f32, 0.0, 0.75, 0.25];
+    let second = ScalarFieldView::new(&second_values, [2, 2]).expect("shape cardinality matches");
+    let mut backend = ScalarColorBackend::<5> {
+        colors: LookupTable::<Grayscale, 5>::from_map(Grayscale),
+        frame: Vec::with_capacity(first_values.len() * 4),
+    };
+
+    let first_pointer = {
+        let first_frame = backend.render(&first).expect("normalized field values");
+        assert_eq!(
+            first_frame,
+            &[
+                0, 0, 0, 255, 128, 128, 128, 255, 255, 255, 255, 255, 64, 64, 64, 255
+            ]
+        );
+        first_frame.as_ptr()
+    };
+
+    let second_frame = backend.render(&second).expect("normalized field values");
+    assert_eq!(
+        second_frame,
+        &[
+            255, 255, 255, 255, 0, 0, 0, 255, 191, 191, 191, 255, 64, 64, 64, 255
+        ]
+    );
+    assert_eq!(second_frame.as_ptr(), first_pointer);
 }

@@ -173,7 +173,12 @@
 - Dependencies: none.
 - Risk/change class: `[verification]` `[patch]`.
 - Effort: M.
-- Status: in-progress; priority: P1; integrator: root; last-update: 2026-09-12; lease: root `tests/view_contracts.rs` and this item.
+- Status: done; priority: P1; integrator: root; last-update: 2026-09-12; delivery: this commit.
+- Evidence: `tests/view_contracts.rs` now renders a `ScalarFieldView` through
+  `LookupTable<Grayscale, 5>` into borrowed RGBA storage, asserts independent
+  bytes for two fields, and proves the backing pointer is reused. The focused
+  locked Nextest, warning-denied Clippy, format, no-default-features check,
+  doctests, and Rustdoc gates pass.
 
 ## IRIS-009 — Restore or retire the ADR index generator
 
