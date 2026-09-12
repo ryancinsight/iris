@@ -173,7 +173,7 @@
 - Dependencies: none.
 - Risk/change class: `[verification]` `[patch]`.
 - Effort: M.
-- Status: todo.
+- Status: in-progress; priority: P1; integrator: root; last-update: 2026-09-12; lease: root `tests/view_contracts.rs` and this item.
 
 ## IRIS-009 — Restore or retire the ADR index generator
 
