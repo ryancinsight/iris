@@ -4,6 +4,7 @@
 //! linear opacity. Iris does not apply an sRGB transfer function when it
 //! quantizes an [`Rgba`] value to bytes.
 
+use super::normalized::in_unit_interval;
 use crate::{IrisError, IrisResult};
 
 /// Four normalized channels with sRGB RGB and linear-opacity alpha semantics.
@@ -24,7 +25,7 @@ impl Rgba {
     /// finite or lies outside `[0, 1]`.
     pub fn new(channels: [f32; 4]) -> IrisResult<Self> {
         for (channel, value) in channels.iter().copied().enumerate() {
-            if !value.is_finite() || !(0.0..=1.0).contains(&value) {
+            if !in_unit_interval(value) {
                 return Err(IrisError::InvalidColorChannel { channel, value });
             }
         }
