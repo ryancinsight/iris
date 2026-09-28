@@ -2,6 +2,17 @@
 
 use crate::{IrisError, IrisResult};
 
+/// Report whether a scalar is finite and lies in the closed interval `[0, 1]`.
+///
+/// This is the single definition of the unit-interval predicate shared by
+/// `Normalized` and `Rgba` validation. Each caller keeps its own error shape,
+/// so this only decides the predicate.
+#[inline]
+#[must_use]
+pub(crate) const fn in_unit_interval(value: f32) -> bool {
+    value.is_finite() && value >= 0.0 && value <= 1.0
+}
+
 /// A finite scalar in the closed interval `[0, 1]`.
 ///
 /// The transparent representation makes the validation boundary zero-cost
@@ -28,11 +39,12 @@ impl Normalized {
     /// # Ok::<(), iris::IrisError>(())
     /// ```
     pub fn new(value: f32) -> IrisResult<Self> {
-        if !value.is_finite() {
-            return Err(IrisError::NonFiniteNormalized { value });
-        }
-        if !(0.0..=1.0).contains(&value) {
-            return Err(IrisError::NormalizedOutOfRange { value });
+        if !in_unit_interval(value) {
+            return Err(if value.is_finite() {
+                IrisError::NormalizedOutOfRange { value }
+            } else {
+                IrisError::NonFiniteNormalized { value }
+            });
         }
         Ok(Self(value))
     }

@@ -6,134 +6,111 @@ use super::{
 };
 use crate::color::{Normalized, Rgba};
 
-/// Built-in normalized color laws with sRGB-encoded RGB output.
+/// Define the closed named-map set with its exhaustive dispatchers.
 ///
-/// All variants use normalized sRGB-encoded RGB channels and normalized linear
-/// opacity. Their interpolation is not linear-light.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[non_exhaustive]
-pub enum NamedColorMap {
-    /// Monotone black-to-white grayscale in normalized sRGB-encoded channels.
-    Grayscale,
-    /// Monotone white-to-black grayscale in normalized sRGB-encoded channels.
-    Inverted,
-    /// Black-red-yellow-white sequential map in normalized sRGB-encoded channels.
-    Hot,
-    /// Cyan-to-magenta sequential map in normalized sRGB-encoded channels.
-    Cool,
-    /// Gray-blue sequential map in normalized sRGB-encoded channels.
-    Bone,
-    /// Blue-cyan-green-yellow-red map in normalized sRGB-encoded channels.
-    Jet,
-    /// Purple-orange-yellow sequential map in normalized sRGB-encoded channels.
-    Plasma,
-    /// Perceptually ordered purple-green-yellow sequential map with normalized
-    /// sRGB-encoded channels.
-    Viridis,
-    /// Piecewise-linear blue-white-red diverging map in normalized sRGB-encoded
-    /// channels.
-    CoolWarm,
-    /// Blue-to-red HSV hue sweep with normalized sRGB-encoded channels.
-    Rainbow,
-    /// Black-purple-red-orange-yellow sequential map in normalized sRGB-encoded
-    /// channels.
-    Inferno,
-    /// Black-purple-red-orange-white sequential map in normalized sRGB-encoded
-    /// channels.
-    Magma,
-    /// High-dynamic-range rainbow-like sequential map with normalized
-    /// sRGB-encoded channels.
-    Turbo,
-    /// Linear blue-to-red map with no neutral midpoint in normalized
-    /// sRGB-encoded channels.
-    BlueRed,
+/// `display_order` is the published `ALL` order, which is deliberately not the
+/// declaration order. The entries are the declaration order: it pins the ADR
+/// 0002 implicit discriminants, so `BlueRed` stays last. Each entry is
+/// `(docs, Variant, label, strategy)`.
+macro_rules! named_color_maps {
+    (
+        display_order: [$($display:ident),+ $(,)?];
+        $(
+            $(#[doc = $doc:literal])+
+            $variant:ident => $label:literal, $strategy:ident,
+        )+
+    ) => {
+        /// Built-in normalized color laws with sRGB-encoded RGB output.
+        ///
+        /// All variants use normalized sRGB-encoded RGB channels and normalized
+        /// linear opacity. Their interpolation is not linear-light.
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[non_exhaustive]
+        pub enum NamedColorMap {
+            $(
+                $(#[doc = $doc])+
+                $variant,
+            )+
+        }
+
+        impl NamedColorMap {
+            /// Built-in maps in stable display order.
+            pub const ALL: [Self; 14] = [
+                $( Self::$display, )+
+            ];
+
+            /// Return the human-readable map name.
+            #[must_use]
+            pub const fn label(self) -> &'static str {
+                match self {
+                    $( Self::$variant => $label, )+
+                }
+            }
+        }
+
+        impl ColorMap for NamedColorMap {
+            fn sample(self, value: Normalized) -> Rgba {
+                match self {
+                    $( Self::$variant => $strategy.sample(value), )+
+                }
+            }
+        }
+
+        #[cfg(test)]
+        const fn variant_index(map: NamedColorMap) -> usize {
+            // The declaration-order discriminant is distinct per variant, so
+            // the coverage test needs no hand-written slot list here.
+            map as usize
+        }
+    };
 }
 
-impl NamedColorMap {
-    /// Built-in maps in stable display order.
-    pub const ALL: [Self; 14] = [
-        Self::BlueRed,
-        Self::Grayscale,
-        Self::Inverted,
-        Self::Hot,
-        Self::Cool,
-        Self::Bone,
-        Self::Jet,
-        Self::Plasma,
-        Self::Viridis,
-        Self::Inferno,
-        Self::Magma,
-        Self::Turbo,
-        Self::CoolWarm,
-        Self::Rainbow,
+named_color_maps! {
+    display_order: [
+        BlueRed, Grayscale, Inverted, Hot, Cool, Bone, Jet, Plasma, Viridis, Inferno, Magma, Turbo,
+        CoolWarm, Rainbow,
     ];
 
-    /// Return the human-readable map name.
-    #[must_use]
-    pub const fn label(self) -> &'static str {
-        match self {
-            Self::BlueRed => "Blue-red",
-            Self::Grayscale => "Grayscale",
-            Self::Inverted => "Inverted",
-            Self::Hot => "Hot",
-            Self::Cool => "Cool",
-            Self::Bone => "Bone",
-            Self::Jet => "Jet",
-            Self::Plasma => "Plasma",
-            Self::Viridis => "Viridis",
-            Self::Inferno => "Inferno",
-            Self::Magma => "Magma",
-            Self::Turbo => "Turbo",
-            Self::CoolWarm => "Cool-warm",
-            Self::Rainbow => "Rainbow",
-        }
-    }
-}
-
-impl ColorMap for NamedColorMap {
-    fn sample(self, value: Normalized) -> Rgba {
-        match self {
-            Self::BlueRed => BlueRed.sample(value),
-            Self::Grayscale => Grayscale.sample(value),
-            Self::Inverted => Inverted.sample(value),
-            Self::Hot => Hot.sample(value),
-            Self::Cool => Cool.sample(value),
-            Self::Bone => Bone.sample(value),
-            Self::Jet => Jet.sample(value),
-            Self::Plasma => Plasma.sample(value),
-            Self::Viridis => Viridis.sample(value),
-            Self::Inferno => Inferno.sample(value),
-            Self::Magma => Magma.sample(value),
-            Self::Turbo => Turbo.sample(value),
-            Self::CoolWarm => CoolWarm.sample(value),
-            Self::Rainbow => Rainbow.sample(value),
-        }
-    }
+    /// Monotone black-to-white grayscale in normalized sRGB-encoded channels.
+    Grayscale => "Grayscale", Grayscale,
+    /// Monotone white-to-black grayscale in normalized sRGB-encoded channels.
+    Inverted => "Inverted", Inverted,
+    /// Black-red-yellow-white sequential map in normalized sRGB-encoded channels.
+    Hot => "Hot", Hot,
+    /// Cyan-to-magenta sequential map in normalized sRGB-encoded channels.
+    Cool => "Cool", Cool,
+    /// Gray-blue sequential map in normalized sRGB-encoded channels.
+    Bone => "Bone", Bone,
+    /// Blue-cyan-green-yellow-red map in normalized sRGB-encoded channels.
+    Jet => "Jet", Jet,
+    /// Purple-orange-yellow sequential map in normalized sRGB-encoded channels.
+    Plasma => "Plasma", Plasma,
+    /// Perceptually ordered purple-green-yellow sequential map with normalized
+    /// sRGB-encoded channels.
+    Viridis => "Viridis", Viridis,
+    /// Piecewise-linear blue-white-red diverging map in normalized sRGB-encoded
+    /// channels.
+    CoolWarm => "Cool-warm", CoolWarm,
+    /// Blue-to-red HSV hue sweep with normalized sRGB-encoded channels.
+    Rainbow => "Rainbow", Rainbow,
+    /// Black-purple-red-orange-yellow sequential map in normalized sRGB-encoded
+    /// channels.
+    Inferno => "Inferno", Inferno,
+    /// Black-purple-red-orange-white sequential map in normalized sRGB-encoded
+    /// channels.
+    Magma => "Magma", Magma,
+    /// High-dynamic-range rainbow-like sequential map with normalized
+    /// sRGB-encoded channels.
+    Turbo => "Turbo", Turbo,
+    /// Linear blue-to-red map with no neutral midpoint in normalized
+    /// sRGB-encoded channels.
+    BlueRed => "Blue-red", BlueRed,
 }
 
 #[cfg(test)]
 mod tests {
-    use super::NamedColorMap;
-
-    const fn variant_index(map: NamedColorMap) -> usize {
-        match map {
-            NamedColorMap::BlueRed => 0,
-            NamedColorMap::Grayscale => 1,
-            NamedColorMap::Inverted => 2,
-            NamedColorMap::Hot => 3,
-            NamedColorMap::Cool => 4,
-            NamedColorMap::Bone => 5,
-            NamedColorMap::Jet => 6,
-            NamedColorMap::Plasma => 7,
-            NamedColorMap::Viridis => 8,
-            NamedColorMap::CoolWarm => 9,
-            NamedColorMap::Rainbow => 10,
-            NamedColorMap::Inferno => 11,
-            NamedColorMap::Magma => 12,
-            NamedColorMap::Turbo => 13,
-        }
-    }
+    use super::{NamedColorMap, variant_index};
 
     #[test]
     fn all_contains_each_variant_once() {
