@@ -34,15 +34,16 @@ discovery.
 
 # Usage
 
-    scripts/lockfile.py --check         # verify the committed lock, offline
-    scripts/lockfile.py --check-staged  # fast index-only check, for pre-commit
-    scripts/lockfile.py --regenerate    # rewrite it correctly (needs network)
+    scripts/lockfile.py --check        # verify the committed lock, offline
+    scripts/lockfile.py --regenerate   # rewrite it correctly (needs network)
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import re
+import json
 import subprocess
 import sys
 import tempfile
@@ -55,19 +56,98 @@ MANIFEST = REPOSITORY / "Cargo.toml"
 # Any first-party dependency resolves through one of these. A lock with none of
 # them has been flattened by the overlay.
 FIRST_PARTY_SOURCE = re.compile(r'^source = "git\+https://github\.com/ryancinsight/', re.M)
+FIRST_PARTY_GIT = "git+https://github.com/ryancinsight/"
+
+# One `[[package]]` source line for a first-party repository, captured whole so
+# the revision and the URL spelling both take part in the identity comparison.
+FIRST_PARTY_PACKAGE_SOURCE = re.compile(
+    r'^source = "(git\+https://github\.com/ryancinsight/[^"]+)"', re.M
+)
+
+# A member records how many first-party providers its graph currently resolves
+# through more than one source, as a single integer beside its lock. The file is
+# a ratchet: the check fails when the measured excess exceeds it, and the number
+# is lowered as the dependency-ordered unpin sweep closes each fork. Absent, the
+# check reports and does not fail -- a member that has never measured its graph
+# is not failed by a guard it has not adopted.
+PROVIDER_IDENTITY_BASELINE_NAME = ".provider-identity-baseline"
 
 
-def run_outside_the_overlay(arguments: list[str]) -> subprocess.CompletedProcess[str]:
+def shared_target_dir(manifest: Path) -> Path | None:
+    """The `target-dir` a stack config above `manifest` declares, if any.
+
+    The neutral working directory below disables cargo's config discovery on
+    purpose — that is what excludes the `[patch]` overlay. It excludes the rest
+    of the config with it, and `target-dir` is in the rest: cargo then falls
+    back to `<manifest dir>/target` and writes a repo-local cache inside the
+    member. That is the `target_forks` debt class the conformance ratchet
+    counts, produced by the tooling that measures it.
+
+    Walking up from the manifest rather than from the cwd is the correction:
+    the overlay is excluded because of *where cargo runs*, and the target
+    directory is restored because of *what is being built*.
+    """
+    for directory in [manifest.parent, *manifest.parent.parents]:
+        config = directory / ".cargo" / "config.toml"
+        if not config.is_file():
+            continue
+        for line in config.read_text(encoding="utf-8").splitlines():
+            stripped = line.split("#", 1)[0].strip()
+            if not stripped.startswith("target-dir"):
+                continue
+            _, _, value = stripped.partition("=")
+            value = value.strip().strip('"').strip("'")
+            if value:
+                return (directory / value).resolve()
+    return None
+
+
+
+def run_outside_the_overlay(
+    arguments: list[str], manifest: Path | None = None
+) -> subprocess.CompletedProcess[str]:
     """Run cargo with a working directory outside the stack root.
 
     Cargo resolves `.cargo/config.toml` by walking up from the working
     directory, never from `--manifest-path`, so this is what excludes the
     overlay. Running from the repository itself would silently include it.
+
+    `manifest` defaults to `MANIFEST` as it stands at call time -- `main`
+    reassigns it under `--manifest-path`, which a definition-time default would
+    never see -- and the consumer lock sweep passes a member's, so one
+    overlay-free runner serves the stack. The manifest option goes before `--`
+    when present because cargo forwards everything after it to the subcommand.
+
+    Excluding the overlay excludes the whole config, `target-dir` included, so
+    the shared cache is restored explicitly from the stack config above the
+    manifest ([`shared_target_dir`]). Without it every check writes a
+    repo-local `target/` into the member it inspects, which is the
+    `target_forks` class the conformance ratchet counts. An inherited
+    `CARGO_TARGET_DIR` wins, so CI -- where there is no stack config and each
+    job is isolated anyway -- is unaffected.
     """
+    if manifest is None:
+        manifest = MANIFEST
+    environment = dict(os.environ)
+    if "CARGO_TARGET_DIR" not in environment:
+        shared = shared_target_dir(manifest)
+        if shared is not None:
+            environment["CARGO_TARGET_DIR"] = str(shared)
+    try:
+        separator = arguments.index("--")
+    except ValueError:
+        separator = len(arguments)
+    cargo_arguments = [
+        *arguments[:separator],
+        "--manifest-path",
+        str(manifest),
+        *arguments[separator:],
+    ]
     with tempfile.TemporaryDirectory() as neutral_directory:
         return subprocess.run(
-            ["cargo", *arguments, "--manifest-path", str(MANIFEST)],
+            ["cargo", *cargo_arguments],
             cwd=neutral_directory,
+            env=environment,
             capture_output=True,
             # `text=True` alone decodes with the locale codepage. Cargo emits
             # UTF-8, so on a Windows console (cp1252) subprocess's reader thread
@@ -81,13 +161,35 @@ def run_outside_the_overlay(arguments: list[str]) -> subprocess.CompletedProcess
         )
 
 
+def declared_first_party_dependencies() -> int | None:
+    """Count dependencies the workspace declares on first-party git sources.
+
+    `cargo metadata --no-deps` reads the manifests alone, so a flattened or
+    missing lock cannot influence it. A workspace declaring none (the atlas
+    tool workspaces) legitimately has a lock with no first-party sources, and
+    the flattening diagnosis must not fire on it. `None` when cargo cannot
+    read the workspace; the --locked resolution below reports that.
+    """
+    completed = run_outside_the_overlay(["metadata", "--no-deps", "--format-version", "1"])
+    if completed.returncode != 0:
+        return None
+    packages = json.loads(completed.stdout)["packages"]
+    return sum(
+        1
+        for package in packages
+        for dependency in package["dependencies"]
+        if (dependency.get("source") or "").startswith(FIRST_PARTY_GIT)
+    )
+
+
 def check() -> int:
     if not LOCKFILE.is_file():
         print(f"error: {LOCKFILE} does not exist", file=sys.stderr)
         return 1
 
     sources = len(FIRST_PARTY_SOURCE.findall(LOCKFILE.read_text(encoding="utf-8")))
-    if sources == 0:
+    declared = declared_first_party_dependencies()
+    if sources == 0 and declared != 0:
         print(
             "error: Cargo.lock contains no first-party git sources.\n"
             "\n"
@@ -120,59 +222,109 @@ def check() -> int:
         )
         return 1
 
-    print(f"Cargo.lock resolves under --locked; {sources} first-party git sources.")
-    return 0
+    if declared == 0:
+        print("Cargo.lock resolves under --locked; no first-party dependencies declared.")
+    else:
+        print(f"Cargo.lock resolves under --locked; {sources} first-party git sources.")
+    return check_provider_identity()
 
 
-def check_staged() -> int:
-    """Structural check of the *staged* `Cargo.lock`, for use from `pre-commit`.
+def provider_identities(lock_text: str) -> dict[str, set[str]]:
+    """Map each first-party repository to the distinct sources it resolves through.
 
-    Deliberately does not run cargo. A pre-commit hook has to be fast enough that
-    nobody reaches for `--no-verify`, and the flattened lock has an unmistakable
-    signature -- zero first-party git sources -- that a text scan settles
-    instantly. Staleness, the other failure `--check` detects, needs real
-    resolution and stays a pre-push concern.
-
-    Checking the *staged blob* rather than the working file is the point: the
-    working copy may already have been repaired while the poisoned version sits
-    in the index, and it is the index that becomes the commit.
+    The key drops the `.git` suffix and the URL case, so the two spellings of one
+    repository count as the fork they are rather than as two providers.
     """
-    staged = subprocess.run(
-        ["git", "diff", "--cached", "--name-only", "--", "Cargo.lock"],
-        capture_output=True,
-        encoding="utf-8",
-        errors="replace",
-        check=False,
-    )
-    if staged.returncode != 0 or not staged.stdout.strip():
-        return 0
+    identities: dict[str, set[str]] = {}
+    for source in FIRST_PARTY_PACKAGE_SOURCE.findall(lock_text):
+        base = source.split("#", 1)[0]
+        repository = base.split("?", 1)[0].removesuffix(".git").lower()
+        identities.setdefault(repository, set()).add(base)
+    return identities
 
-    blob = subprocess.run(
-        ["git", "show", ":Cargo.lock"],
-        capture_output=True,
-        encoding="utf-8",
-        errors="replace",
-        check=False,
-    )
-    if blob.returncode != 0:
-        return 0
 
-    if len(FIRST_PARTY_SOURCE.findall(blob.stdout)) > 0:
+def provider_identity_baseline() -> int | None:
+    """Read the member's committed excess-source bound, or `None` when unset."""
+    path = LOCKFILE.parent / PROVIDER_IDENTITY_BASELINE_NAME
+    if not path.is_file():
+        return None
+    try:
+        return int(path.read_text(encoding="utf-8").split("#", 1)[0].strip())
+    except ValueError:
+        print(
+            f"error: {path} must contain a single integer bound.",
+            file=sys.stderr,
+        )
+        return -1
+
+
+def check_provider_identity() -> int:
+    """Bound the first-party providers that resolve through more than one source.
+
+    A provider reached by two sources is compiled twice, so its public types stop
+    matching across the boundary between the consumers that took different
+    routes. Nothing reports this: the build is green, the lock resolves under
+    `--locked`, and the mismatch surfaces only where the two halves meet.
+
+    It is also the reason a merged co-evolution pin cannot be dropped on its own.
+    Removing one while a transitive first-party consumer still pins the older
+    revision adds a source rather than removing one -- measured on apollo, where
+    dropping four merged pins raised the excess from four to eight because
+    `leto-ops` still pinned hermes at `5a399ee`.
+
+    The bound is a ratchet, not a zero: these forks exist today and a check that
+    fails on arrival gets disabled rather than fixed.
+    """
+    identities = provider_identities(LOCKFILE.read_text(encoding="utf-8"))
+    forked = {name: sources for name, sources in identities.items() if len(sources) > 1}
+    excess = sum(len(sources) - 1 for sources in forked.values())
+
+    for name, sources in sorted(forked.items()):
+        print(f"  {name.rsplit('/', 1)[-1]} resolves through {len(sources)} sources:")
+        for source in sorted(sources):
+            print(f"    {source.split('ryancinsight/', 1)[-1]}")
+
+    baseline = provider_identity_baseline()
+    if baseline is None:
+        print(
+            f"Provider identity: {excess} source(s) in excess of one per "
+            f"repository; unbounded (no {PROVIDER_IDENTITY_BASELINE_NAME})."
+        )
+        return 0
+    if baseline < 0:
+        return 1
+
+    if excess > baseline:
+        print(
+            f"error: {excess} first-party provider sources in excess of one per\n"
+            f"repository; the committed bound is {baseline}.\n"
+            f"\n"
+            f"Each extra source is a second copy of that provider in the graph, so\n"
+            f"its public types no longer match across the boundary between the\n"
+            f"consumers that reached it by different routes.\n"
+            f"\n"
+            f"A merged co-evolution pin cannot be removed until every transitive\n"
+            f"first-party consumer of that provider has advanced too; unpinning\n"
+            f"ahead of them adds a source rather than removing one.\n"
+            f"\n"
+            f"Fix: advance the consumers first, or restore the pin. Lower\n"
+            f"{PROVIDER_IDENTITY_BASELINE_NAME} only when a fork actually closes.",
+            file=sys.stderr,
+        )
+        return 1
+
+    if excess < baseline:
+        print(
+            f"Provider identity: {excess} source(s) in excess of one per repository, "
+            f"below the committed bound of {baseline} -- lower it to {excess}."
+        )
         return 0
 
     print(
-        "error: the staged Cargo.lock contains no first-party git sources.\n"
-        "\n"
-        "A cargo command run against a tree under the Atlas stack root rewrote\n"
-        "it with the overlay active, which resolves those dependencies to local\n"
-        "paths and drops their git sources. Committing it now is what turns a\n"
-        "working branch into one that can never be pushed.\n"
-        "\n"
-        "Fix: scripts/lockfile.py --regenerate, then stage the result.\n"
-        "To commit anyway: SKIP_LOCKFILE_CHECK=1 git commit",
-        file=sys.stderr,
+        f"Provider identity: {excess} source(s) in excess of one per repository "
+        f"(bound {baseline})."
     )
-    return 1
+    return 0
 
 
 def regenerate() -> int:
@@ -189,17 +341,15 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="verify the committed lock")
     mode.add_argument("--regenerate", action="store_true", help="rewrite the lock correctly")
-    mode.add_argument(
-        "--check-staged",
-        action="store_true",
-        help="fast structural check of the staged lock, for pre-commit",
-    )
+    parser.add_argument("--manifest-path", type=Path, default=None,
+                        help="path to Cargo.toml (overrides auto-detection from __file__)")
     arguments = parser.parse_args()
-    if arguments.regenerate:
-        return regenerate()
-    if arguments.check_staged:
-        return check_staged()
-    return check()
+    if arguments.manifest_path is not None:
+        global REPOSITORY, LOCKFILE, MANIFEST
+        MANIFEST = arguments.manifest_path.resolve()
+        REPOSITORY = MANIFEST.parent
+        LOCKFILE = REPOSITORY / "Cargo.lock"
+    return regenerate() if arguments.regenerate else check()
 
 
 if __name__ == "__main__":

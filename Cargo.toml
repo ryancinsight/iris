@@ -3,10 +3,10 @@
 # `iris-viz` while `[lib] name` keeps the import path `iris` — the same split
 # the stack already uses for `moirai-runtime`, `mnemosyne-memory`, and
 # `themis-topology`. Consumers write
-# `iris = { package = "iris-viz", version = "0.1.0" }` and every `use iris::…`
+# `iris = { package = "iris-viz", version = "0.1.1" }` and every `use iris::…`
 # is unchanged.
 name = "iris-viz"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.95"
 authors = ["Ryan Clanton <ryanclanton@outlook.com>"]
