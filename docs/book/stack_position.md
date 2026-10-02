@@ -49,7 +49,7 @@ registered). Consumers write:
 
 ```toml
 [dependencies]
-iris = { package = "iris-viz", version = "0.1.0" }
+iris = { package = "iris-viz", version = "0.1.1" }
 ```
 
 All import paths remain `use iris::…` unchanged.
