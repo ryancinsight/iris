@@ -1,5 +1,21 @@
 # Iris gap audit
 
+## IRIS-016 — Zero cardinality after prefix overflow [patch]
+
+Current main's checked fold rejects [MAX,2,0] before seeing the zero, despite
+its documented empty-field contract. Six unchanged-source failures and nine
+controls reproduce in debug/release/no-default. Keep the fold and inspect zero
+only if a prefix overflows: zero annihilates the full product; absent zero,
+positive later factors cannot restore representability. This changes no
+stride/offset provider or positive-rank requirement. Fifteen regressions and
+19,120 exact-product cases/profile pass; all 8,140 nonzero overflowing cases
+still fail as typed overflow. Measured caller deltas and zero sampled allocations
+are bounded evidence, not whole-render guarantees. See
+`docs/verification/zero-cardinality.md`. Exact-head gates/review and existing
+IRIS-003 publication/authentication acceptance remain pending; no release or
+credential/settings work is claimed.
+
+
 ## Finding 2026-08-20: iris scope-vs-delivery audit
 
 Static audit of `9672fc0876306fbb76d58fb3af37e8cbd5998b42` on `main`. No build,
