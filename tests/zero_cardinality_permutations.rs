@@ -71,7 +71,7 @@ fn every_nonzero_overflow_order_still_reports_overflow() {
     permutations(
         |shape| {
             assert_eq!(
-                ScalarFieldView::new(&[] as &[u8], shape),
+                ScalarFieldView::<u8, 4>::new(&[], shape),
                 Err(IrisError::ShapeCardinalityOverflow)
             );
         },
@@ -85,7 +85,7 @@ fn every_representable_nonzero_order_keeps_exact_mismatch_cardinality() {
     permutations(
         |shape| {
             assert_eq!(
-                ScalarFieldView::new(&[] as &[u8], shape),
+                ScalarFieldView::<u8, 4>::new(&[], shape),
                 Err(IrisError::ShapeCardinalityMismatch {
                     expected: usize::MAX - 1,
                     actual: 0,

@@ -62,7 +62,7 @@ fn small_zero_extent_permutations_and_rank_one_stay_empty() {
 fn nonzero_extent_products_still_report_overflow() {
     for shape in [[usize::MAX, 2], [2, usize::MAX]] {
         assert_eq!(
-            ScalarFieldView::new(&[] as &[u8], shape),
+            ScalarFieldView::<u8, 2>::new(&[], shape),
             Err(IrisError::ShapeCardinalityOverflow)
         );
     }
@@ -71,7 +71,7 @@ fn nonzero_extent_products_still_report_overflow() {
 #[test]
 fn representable_large_product_reports_exact_mismatch() {
     assert_eq!(
-        ScalarFieldView::new(&[] as &[u8], [usize::MAX, 1]),
+        ScalarFieldView::<u8, 2>::new(&[], [usize::MAX, 1]),
         Err(IrisError::ShapeCardinalityMismatch {
             expected: usize::MAX,
             actual: 0,
