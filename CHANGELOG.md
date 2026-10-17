@@ -2,6 +2,25 @@
 
 All notable changes are documented in this file.
 
+## [0.1.2] - Unreleased
+
+### Fixed
+
+- [patch] Make scalar-field zero cardinality independent of axis order. After
+  checked prefix overflow, recognize a later zero extent; accept empty storage
+  or report the exact zero/actual mismatch. Keep nonzero overflow, positive-rank
+  enforcement, borrowed storage and iterator behavior unchanged.
+- Add dimension-permutation, nonzero-overflow, zero-sized-element and rank-zero
+  regression controls, including no-default coverage. Keep layout-provider and
+  publication/authentication contracts outside this correction.
+
+### Validation scope
+
+Source/oracle and caller/resource evidence is in
+`docs/verification/zero-cardinality.md`. Independent exact-head review, final
+source/package/hosted gates and existing release/authentication acceptance remain
+required before merge/publication. No whole-render performance guarantee.
+
 ## Unreleased
 
 ### Added

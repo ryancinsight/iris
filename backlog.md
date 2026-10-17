@@ -1,5 +1,28 @@
 # Backlog
 
+<a id="IRIS-016"></a>
+## IRIS-016 — Axis-order-independent empty scalar fields [patch]
+
+- Status: blocked; owner: Codex; target: 0.1.2; priority: correctness.
+- Baseline: current 0.1.1 main. [MAX,2,0] rejects empty storage after prefix
+  overflow, while [0,MAX,2] accepts the same zero cardinality. Original three
+  failures/six controls and expanded six failures/nine controls are preserved.
+- Repair: retain the checked product; only after overflow recognize a zero
+  elsewhere in the shape. Nonzero overflow and exact mismatch stay typed.
+  Rank zero remains invalid; positive-rank empty domains retain slice identity.
+- Boundary: Iris carries no strides/offsets. Leto logical cardinality already
+  recognizes zero, but its C/F builders retain signed-representation checks;
+  no layout/tensor policy or other provider code changes here.
+- Evidence: fifteen regressions in debug/release/no-default, rank-four dimension
+  permutations, real nonzero overflow, MAX-1, zero-sized scalars and rank-zero
+  compile failure; 19,120 exact-product oracle inputs/profile. Caller/resource
+  evidence and limits are in `docs/verification/zero-cardinality.md`.
+- Acceptance: exact-head source/package/API/supply-chain/MSRV/hosted gates,
+  representative performance/resource assessment and independent review. Keep
+  IRIS-003 release/authentication acceptance open; no credentials/settings or
+  publication action is part of this draft.
+
+
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry

@@ -31,20 +31,30 @@ impl<'a, T, const D: usize> ScalarFieldView<'a, T, D> {
     ///
     /// # Errors
     ///
-    /// Returns [`IrisError::ShapeCardinalityOverflow`] when the extent product
+    /// Returns [`IrisError::ShapeCardinalityOverflow`] when a nonzero extent product
     /// overflows and [`IrisError::ShapeCardinalityMismatch`] when it differs
     /// from `values.len()`.
     ///
     /// Zero extents are valid for empty domains: a shape containing `0` is
     /// accepted only with an empty `values` slice. The view still borrows that
     /// slice and its iterator remains empty, so no sentinel allocation is
-    /// needed for an empty field.
+    /// needed for an empty field. Zero cardinality is independent of axis order,
+    /// even when a nonzero partial product would overflow. This view carries no
+    /// strides or offsets whose representability would need separate validation.
+    ///
+    /// Rank must be positive; the empty shape `[]` is rejected at compile time.
+    ///
+    /// ```compile_fail
+    /// use iris::view::ScalarFieldView;
+    /// let _ = ScalarFieldView::<u8, 0>::new(&[], []);
+    /// ```
     pub fn new(values: &'a [T], shape: [usize; D]) -> IrisResult<Self> {
         const { assert!(D > 0, "scalar fields require positive rank") };
 
         let expected = shape.iter().try_fold(1_usize, |cardinality, extent| {
             cardinality.checked_mul(*extent)
         });
+        let expected = expected.or_else(|| shape.contains(&0).then_some(0));
         let Some(expected) = expected else {
             return Err(IrisError::ShapeCardinalityOverflow);
         };

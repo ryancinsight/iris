@@ -1,5 +1,22 @@
 # Checklist
 
+Active correctness target: **0.1.2**, IRIS-016.
+
+- [ ] **IRIS-016: empty scalar-field cardinality [patch]**
+    - [x] Inspect current main, open PRs/backlog and instructions; preserve owner
+      work, frozen baseline evidence and every unrelated release/service hold.
+    - [x] Preserve six red cases/nine controls before repair; retain every
+      dimension permutation, nonzero overflow, ZST and positive-rank contract.
+    - [x] Repair only logical zero cardinality after prefix overflow; verify
+      debug/release/no-default regressions and exact-product corpus.
+    - [x] Measure actual direct/indirect/streaming constructors and allocation
+      requests; retain both eager-scan and final lazy-check evidence and limits.
+    - [ ] Complete final source, normalized package/consumer, API, supply-chain,
+      declared MSRV and hosted gates on the accepted review head.
+    - [ ] Obtain independent exact-head correctness/performance/resource review;
+      preserve IRIS-003 publication/authentication acceptance before release.
+
+
 ## IRIS-003
 
 - [x] Confirm the `iris` name is not registered on crates.io; the registry
