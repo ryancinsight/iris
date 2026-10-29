@@ -1,28 +1,5 @@
 # Backlog
 
-<a id="IRIS-016"></a>
-## IRIS-016 — Axis-order-independent empty scalar fields [patch]
-
-- Status: blocked; owner: Codex; target: 0.1.2; priority: correctness.
-- Baseline: current 0.1.1 main. [MAX,2,0] rejects empty storage after prefix
-  overflow, while [0,MAX,2] accepts the same zero cardinality. Original three
-  failures/six controls and expanded six failures/nine controls are preserved.
-- Repair: retain the checked product; only after overflow recognize a zero
-  elsewhere in the shape. Nonzero overflow and exact mismatch stay typed.
-  Rank zero remains invalid; positive-rank empty domains retain slice identity.
-- Boundary: Iris carries no strides/offsets. Leto logical cardinality already
-  recognizes zero, but its C/F builders retain signed-representation checks;
-  no layout/tensor policy or other provider code changes here.
-- Evidence: fifteen regressions in debug/release/no-default, rank-four dimension
-  permutations, real nonzero overflow, MAX-1, zero-sized scalars and rank-zero
-  compile failure; 19,120 exact-product oracle inputs/profile. Caller/resource
-  evidence and limits are in `docs/verification/zero-cardinality.md`.
-- Acceptance: exact-head source/package/API/supply-chain/MSRV/hosted gates,
-  representative performance/resource assessment and independent review. Keep
-  IRIS-003 release/authentication acceptance open; no credentials/settings or
-  publication action is part of this draft.
-
-
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
@@ -45,6 +22,12 @@
   `31462641512` reached the OIDC token step but failed with HTTP 400 because no
   trusted publishing configuration exists for `ryancinsight/iris`; this is an
   external release blocker, not fixed by the provider documentation update.
+- Next steps: pass the format, feature, lint, Nextest, doctest, documentation,
+  package and hosted CI gates; merge the release automation and publish
+  `iris-viz`; configure the exact trusted publisher, enforce
+  trusted-publishing-only, and verify the crates.io index and the GitHub
+  Release. The trusted-publisher configuration is an external repository
+  setting that no repository change can supply.
 
 ## IRIS-001 — Public visualization foundation
 
@@ -66,8 +49,7 @@
 ## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant [verification] [patch] — done 2026-08-21
 
 - **Owner:** Codex; branch `fix/iris-map-coverage`.
-- **Scope:** the completeness test in `src/color/map/named.rs`, this backlog,
-  and the provider checklist.
+- **Scope:** the completeness test in `src/color/map/named.rs` and this backlog.
 - **Correction to the original audit item:** an integration test in
   `tests/color_laws.rs` cannot exhaustively match the public
   `#[non_exhaustive]` enum. The defining module is the only sound location for
@@ -97,7 +79,7 @@
 
 - Outcome: synchronize the generated ADR index with Iris's canonical ADR
   headers.
-- Scope: `docs/adr/README.md`, the provider checklist, and this backlog entry.
+- Scope: `docs/adr/README.md` and this backlog entry.
 - Non-goals: no ADR decision changes.
 - Acceptance: the generated index lists ADR 0001 and 0002 as `Accepted` and
   excludes non-ADR files.
@@ -146,7 +128,8 @@
   — the crate's own control point from `table.rs:118,126,133`. No test compares
   any built-in map to a published table, and no approximation error bound is
   stated anywhere in the repository.
-- Dependencies: none.
+- Dependencies: none; its verdict decides whether a table control point is wrong,
+  so it precedes the IRIS-011 public-surface change and the first publish.
 - Risk/change class: `[verification]` `[patch]` (tests and docs only; a control
   point found to be wrong reclassifies the fix to `[minor]`).
 - Effort: M.
@@ -238,7 +221,8 @@
   crate's `rust-version = "1.95"` (`Cargo.toml:12`), so the gate denies
   `no_std` consumers an error trait for no reason, while `src/lib.rs:7-8`
   advertises `no_std` compatibility.
-- Dependencies: none.
+- Dependencies: none; hygiene follows the IRIS-006 verdict and the IRIS-011
+  public-surface change.
 - Risk/change class: `[arch]` `[minor]` (additive trait impl on a public type).
 - Effort: S.
 - Status: todo.
@@ -260,8 +244,9 @@
   `pub fn from_u8(value: u8) -> Self`, the only type-suffixed identifier under
   `src/`, while `grep 'impl.*From<' src` returns no matches — a bespoke
   constructor where the std lattice applies.
-- Dependencies: this removes a public item; sequence it before the first
-  `iris-viz` publish (IRIS-003) or accept the major bump.
+- Dependencies: IRIS-006 (its verdict decides whether a control point is wrong);
+  this removes a public item; sequence it before the first `iris-viz` publish
+  (IRIS-003) or accept the major bump.
 - Risk/change class: `[arch]` `[major]` (public item removal).
 - Effort: S.
 - Status: todo.
@@ -320,7 +305,8 @@
   (IRIS-004, `backlog.md:43-55`), but none for `helios`. Verification requires
   reading the consumer repositories, which was outside the scope of the
   2026-08-20 single-repository audit.
-- Dependencies: read access to the consumer repositories.
+- Dependencies: read access to the consumer repositories; documentation follows the
+  IRIS-006 verdict.
 - Risk/change class: `[docs]` `[patch]`.
 - Effort: S.
 - Status: todo.
@@ -344,7 +330,8 @@
   `src/color/lookup_table.rs` exists purely as a precomputation cache, and the
   README asserts allocation-free, dispatch-free operation with no timing
   evidence behind it.
-- Dependencies: none.
+- Dependencies: none; the measurement follows the IRIS-006 verdict so the benchmark
+  covers the law that ships.
 - Risk/change class: `[perf]` `[patch]`.
 - Effort: S.
 - Status: todo.
