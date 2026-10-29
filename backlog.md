@@ -133,7 +133,7 @@
 - Risk/change class: `[verification]` `[patch]` (tests and docs only; a control
   point found to be wrong reclassifies the fix to `[minor]`).
 - Effort: M.
-- Status: done [verification] [patch] in 0.1.3; delivery gates remain required.
+- Status: todo.
 - Evidence: `tests/palette_reference.rs`, release-pinned fixtures/generator and
   `docs/book/palette-reference.md`; measured bounds characterize the existing
   approximations, without changing production control points or inventing a
