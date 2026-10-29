@@ -8,13 +8,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from importlib import metadata
+from importlib import import_module, metadata, util
 import json
 import math
 import os
 import struct
 from pathlib import Path
-import sysconfig
 import tempfile
 
 
@@ -42,6 +41,7 @@ def verify_fixtures() -> None:
     expected = {
         "schema": 2, "project": "matplotlib/matplotlib", "release": RELEASE,
         "commit": COMMIT, "source_sha256": SOURCE_HASHES,
+        "numpy": NUMPY,
         "license_sha256": LICENSE_HASH, "lut_length": 256, "grid_steps": 1024,
         "encoding": "ieee754-binary64-u64",
     }
@@ -71,14 +71,35 @@ def verify_fixtures() -> None:
     print("verified seven pinned reference fixtures, provenance and license")
 
 
+def bound_distribution(name: str, version: str):
+    """Bind Python's package resolution to the distribution being verified."""
+    distribution = metadata.distribution(name)
+    if distribution.version != version:
+        raise ValueError(f"requires {name}=={version}")
+    directory = Path(distribution.locate_file(name)).resolve()
+    spec = util.find_spec(name)
+    if (spec is None or spec.origin is None
+            or Path(spec.origin).resolve() != directory / "__init__.py"
+            or [Path(p).resolve() for p in spec.submodule_search_locations or []] != [directory]):
+        raise ValueError(f"import resolution differs from verified distribution: {name}")
+    return distribution, directory
+
+
+def import_verified(name: str, directory: Path):
+    """Reject a cached or redirected import before using its values."""
+    module = import_module(name)
+    if (Path(module.__file__).resolve() != directory / "__init__.py"
+            or [Path(p).resolve() for p in module.__path__] != [directory]):
+        raise ValueError(f"imported package differs from verified distribution: {name}")
+    return module
+
+
 def verified_library():
-    if metadata.version("matplotlib") != RELEASE or metadata.version("numpy") != NUMPY:
-        raise ValueError(f"requires matplotlib=={RELEASE} and numpy=={NUMPY}")
-    directory = Path(sysconfig.get_path("purelib")) / "matplotlib"
+    distribution, directory = bound_distribution("matplotlib", RELEASE)
+    _, numpy_directory = bound_distribution("numpy", NUMPY)
     for name, expected in SOURCE_HASHES.items():
         if digest((directory / name).read_bytes()) != expected:
             raise ValueError(f"wheel {name} differs from pinned upstream commit {COMMIT}")
-    distribution = metadata.distribution("matplotlib")
     notices = [
         distribution.locate_file(path).read_bytes()
         for path in distribution.files or []
@@ -91,13 +112,18 @@ def verified_library():
     # the exact relevant upstream notice, and prove it is present in the wheel.
     if not any(license_text in data for data in notices):
         raise ValueError("wheel lacks the exact pinned Matplotlib license text")
-    return license_text
+    return license_text, {"matplotlib": directory, "numpy": numpy_directory}
 
 
-def generate(license_text: bytes) -> dict[str, bytes]:
+def generate(license_text: bytes, directories: dict[str, Path]) -> dict[str, bytes]:
     # Source hashes are checked before importing the released reference tool.
-    import matplotlib
-    import numpy as np
+    matplotlib = import_verified("matplotlib", directories["matplotlib"])
+    np = import_verified("numpy", directories["numpy"])
+    for filename, expected in SOURCE_HASHES.items():
+        module = import_module("matplotlib." + filename.removesuffix(".py"))
+        source = Path(module.__file__).resolve()
+        if source != directories["matplotlib"] / filename or digest(source.read_bytes()) != expected:
+            raise ValueError(f"imported source differs from pinned release: {filename}")
 
     documents = {"MATPLOTLIB-LICENSE": license_text}
     provenance = {
@@ -155,11 +181,11 @@ def main() -> None:
     if args.verify_fixtures:
         verify_fixtures()
         return
-    license_text = verified_library()
+    license_text, directories = verified_library()
     with tempfile.TemporaryDirectory(prefix="iris-mpl-config-") as directory:
         os.environ["MPLCONFIGDIR"] = directory
         os.environ["MPLBACKEND"] = "Agg"
-        documents = generate(license_text)
+        documents = generate(license_text, directories)
     if args.check:
         mismatched = [name for name, data in documents.items()
                       if not (OUTPUT / name).is_file() or (OUTPUT / name).read_bytes() != data]

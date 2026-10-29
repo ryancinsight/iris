@@ -68,6 +68,10 @@ The source hashes are checked before import. `--check` regenerates in memory
 and requires byte identity; it never rewrites fixtures. Normal CI uses
 `--verify-fixtures`, requiring only Python's standard library, to verify the
 committed hashes, dimensions, finite normalized channels and license notice.
+Generation binds both package resolution and the actual imported Matplotlib
+and NumPy modules to the verified distributions. It also rechecks the paths
+and hashes of the imported Matplotlib palette sources before sampling, so a
+shadow package cannot produce tables labeled with the pinned provenance.
 
 `cargo test --locked --test palette_reference` compares the actual Iris API to
 the committed reference without requiring Matplotlib at runtime. Existing

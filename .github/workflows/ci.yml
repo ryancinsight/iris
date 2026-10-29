@@ -63,6 +63,8 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: Verify pinned palette reference fixtures
         run: python3 tools/generate_palette_reference.py --verify-fixtures
+      - name: Test reference generator import binding
+        run: python3 -m unittest discover -s tools/tests -v
       - run: cargo fmt --check
       - run: cargo check --all-features
       - run: cargo check --no-default-features
