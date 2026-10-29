@@ -1,10 +1,12 @@
 # Scalar-field zero cardinality
 
-IRIS-016 is a patch correction to `ScalarFieldView::new` in the independent
-0.1.2 candidate based on current 0.1.1 main. No array-layout provider, renderer,
-color law, public type, dependency, stride/offset policy or publication setting
-changes. Independent exact-head review and existing release/authentication
-acceptance remain required before merge/publication.
+IRIS-016 is a patch correction to `ScalarFieldView::new` in the 0.1.2 candidate
+based on current 0.1.1 main. No array-layout provider, renderer, color law,
+public type, dependency, stride/offset policy or publication setting changes.
+The draft was taken over on 2026-10-29; the fix, the regressions and the
+measurements below are the draft author's, reviewed unchanged at the takeover
+head. Existing release/authentication acceptance (IRIS-003) stays open, and no
+publication action is part of this correction.
 
 ## Contract and proof
 
@@ -89,3 +91,20 @@ are object sizes, not peak stack, RSS, cache or whole-render guarantees. Old
 recovered-empty outputs are wrong and are not throughput targets. Caller-cost
 acceptance remains explicit independent-review work; no compiler threshold,
 forced-inline attribute, limit, lint or test reduction is used.
+
+## Review and gates
+
+The takeover reviewed the constructor branch, the fifteen regressions and the
+rank-zero compile-fail doctest at draft head `1b46ed0` and at the takeover
+commit. Local gates on the takeover head: `cargo fmt --check`,
+`cargo clippy --all-targets --all-features -- -D warnings`, and
+`cargo nextest run --all-features` with 35 tests passing. Hosted checks on the
+draft head were green: `verify`, `SemVer gate / SemVer (informational)`,
+`ADR index is current`, `Rust 1.95.0 floor check`, and `supply-chain`.
+
+The review confirmed the change stays one branch in the constructor: the
+checked fold is unchanged, and the zero scan runs only after an overflow, so a
+nonzero overflow keeps its typed error and a representable product keeps its
+exact cardinality. The caller-cost and allocation numbers above are the draft
+author's ARM64 Mac measurements; the takeover re-ran the correctness gates only,
+so no Windows timing claim is made here.
