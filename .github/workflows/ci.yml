@@ -61,6 +61,8 @@ jobs:
           workspaces: .
           shared-key: iris
           save-if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Verify pinned palette reference fixtures
+        run: python3 tools/generate_palette_reference.py --verify-fixtures
       - run: cargo fmt --check
       - run: cargo check --all-features
       - run: cargo check --no-default-features
