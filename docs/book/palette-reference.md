@@ -25,16 +25,17 @@ piecewise-linear law in f32. Its observed f32 channels are represented exactly
 in f64 solely for comparison with the independent binary64 reference. Alpha is 1.
 
 For each map and RGB channel, measure the exact maximum absolute channel
-difference M on this grid. The test decodes reference binary64 bits directly.
+difference `M` on this grid. The test decodes reference binary64 bits directly.
 Each observed Iris f32 is exactly representable in f64. Every nonzero value in
 this finite corpus has a binary64 biased exponent of at least 995; the test
-checks that condition before scaling to integers with denominator D=2^80.
+checks that condition before scaling to integers with denominator `D=2^80`.
 Thus integer absolute difference is exact, and multiplying it by 1,000,000
 stays below 2^100, within u128.
 
-Document the decimal ceiling B=ceil(M*1,000,000) in integer millionths. Tests
-prove both M*1,000,000<=B and M*1,000,000>B-1 using integer cross-products with
-D. No floating-point subtraction, scaling or ceiling can erase a remainder.
+Document the decimal ceiling `B = ceil(M * 1_000_000)` in integer millionths.
+Tests prove both `M * 1_000_000 <= B` and `M * 1_000_000 > B - 1` using integer
+cross-products with `D`. No floating-point subtraction, scaling or ceiling can
+erase a remainder.
 For Plasma red, naive float scaling hid a tiny remainder above 0.244877; the
 exact ceiling is 0.244878. A dedicated regression retains that counterexample.
 These bounds do not introduce an application fidelity requirement. Changing
