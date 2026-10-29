@@ -29,3 +29,18 @@ All notable changes are documented in this file.
 - Add an exhaustive defining-module law test that rejects duplicate or omitted
   entries in `NamedColorMap::ALL` while retaining the public enum's
   `#[non_exhaustive]` compatibility contract.
+
+### Fixed
+
+- [patch] Make scalar-field zero cardinality independent of axis order. After
+  checked prefix overflow, recognize a later zero extent; accept empty storage
+  or report the exact zero/actual mismatch. Keep nonzero overflow, positive-rank
+  enforcement, borrowed storage and iterator behavior unchanged.
+- Add dimension-permutation, nonzero-overflow, zero-sized-element and rank-zero
+  regression controls, including no-default coverage. Keep layout-provider and
+  publication/authentication contracts outside this correction.
+
+The crate version moves to 0.1.2 with this correction. Source/oracle and
+caller/resource evidence is in `docs/verification/zero-cardinality.md`; the
+release/authentication acceptance in IRIS-003 stays open, and no whole-render
+performance guarantee is claimed.

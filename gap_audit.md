@@ -166,8 +166,8 @@ formats, GPU mechanics, or consumer-specific scalar-range semantics.
 
 The registry package identity is `iris-viz`; the Rust library and import path
 remain `iris`. The release artifact prescription is
-`crate-iris-viz-v<version>`. `README.md`, `CHANGELOG.md`, `backlog.md`, and
-`checklist.md` now use that split consistently.
+`crate-iris-viz-v<version>`. `README.md`, `CHANGELOG.md`, and `backlog.md` now
+use that split consistently.
 
 The audited pre-change provider default was
 `bc47ce37376127b65c064b93dac256555f44ff65`. Hosted provider CI passes at that
