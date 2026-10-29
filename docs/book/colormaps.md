@@ -92,6 +92,9 @@ points in normalized sRGB-encoded RGB space. Each output channel therefore lies
 in the convex hull of its bracketing control values, and since all control
 points are in `[0, 1]`, the RGBA invariant is preserved under interpolation.
 
+The [reference agreement chapter](palette-reference.md) states the measured
+per-channel differences for the seven approximations and their finite-grid scope.
+
 ## `LookupTable`
 
 [`LookupTable`] is a separate, optional cache, `LookupTable<M, N>`, built from

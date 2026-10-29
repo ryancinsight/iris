@@ -40,31 +40,24 @@ serving the `Rainbow` law only. The convention is pinned by an exhaustive
 contract is stated consistently in six places and verified; no colorspace
 capability is claimed and none is delivered.
 
-### The load-bearing verification gap: palette approximations have a self-referential oracle
+### IRIS-006 reference agreement is measured; final delivery is pending
 
-Seven built-in maps document themselves as approximations of published
-palettes — `Bone` and `Jet` as "approximating the standard … palette",
-`Plasma`, `Viridis`, `Inferno`, `Magma`, and `Turbo` as five- or
-nine-control-point approximations (`src/color/map/table.rs:6,31,70,108,146,196,246`).
-No test in the repository compares any of them to a published table, and no
-approximation error bound is stated anywhere. What
-`tests/color_laws.rs:114-178` asserts instead is that each map returns its own
-declared control point: `Viridis(0.5) == [0.204, 0.636, 0.469]` at
-`tests/color_laws.rs:143-149` restates the constants at
-`src/color/map/table.rs:118,126,133`. That assertion cannot fail while the
-constants and the interpolator agree, so it establishes interpolator
-correctness at a node and nothing about palette agreement. Filed as IRIS-006.
+The seven documented palette approximations now have independent Matplotlib
+3.11.2 reference tables, source/fixture hashes and upstream notices. Actual Iris
+sampling on all 1,025 exact binary grid inputs is compared with the released
+256-entry LUT semantics. The measured RGB ceilings are stated in each map's
+Rustdoc and in `docs/book/palette-reference.md`, with their outward-rounding
+rule and finite-grid scope. Existing interpolation-node laws remain intact.
 
-The perceptual claim is narrower than the risk. `NamedColorMap::Viridis` is
-documented as "Perceptually ordered" (`src/color/map/named.rs:31-33`) and the
-book repeats it; the README is careful to scope the matplotlib citation to
-"names and classifications", and ADR 0001 and `src/color/map/diverging.rs:23-27`
-both explicitly disclaim Moreland's Msh interpolation for `CoolWarm`. So no
-perceptual-uniformity or colorblind-safety claim is made that evidence would
-have to back. The residual exposure is that a five-control-point
-piecewise-linear resampling in sRGB space does not preserve the property that
-makes the source palette worth naming, and nothing in the repository bounds how
-far it departs. IRIS-006 closes that by measurement, not by argument.
+The independent channel differences are substantial for several maps: the
+largest channel ceiling is 0.005341 for Bone and 0.498381 for Turbo. They quantify
+the current approximation, rather than establish a previously promised fidelity
+threshold. No palette control points or executable color-law logic change.
+No continuous-domain or perceptual guarantee follows from this finite sample.
+
+IRIS-006 is implemented as a verification patch; full final-head gates,
+independent review and conditional delivery remain required. The existing
+perceptual-uniformity disclaimer and all other audit items remain applicable.
 
 ### The render seam is declared but never exercised against its own view types
 

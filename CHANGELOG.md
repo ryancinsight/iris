@@ -2,6 +2,15 @@
 
 All notable changes are documented in this file.
 
+## 0.1.3
+
+### Added
+
+- [patch] Release-pinned Matplotlib reference fixtures and measured RGB agreement
+  tests for Bone, Jet, Plasma, Viridis, Inferno, Magma and Turbo; document the
+  six-decimal outward bounds on the 1,025-point grid. Keep all palette values
+  and public APIs unchanged. Preserve fixture provenance and upstream notices.
+
 ## Unreleased
 
 ### Added

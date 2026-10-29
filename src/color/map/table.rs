@@ -64,6 +64,10 @@ macro_rules! piecewise_map {
 piecewise_map! {
     /// Gray-blue sequential map approximating the standard bone palette in
     /// normalized sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.005341, 0.003498, 0.003567]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Bone,
     [(0.0, 0.0), (0.746_03, 0.652_78), (1.0, 1.0)],
     [(0.0, 0.0), (0.365_08, 0.319_44), (0.746_03, 0.777_78), (1.0, 1.0)],
@@ -73,6 +77,10 @@ piecewise_map! {
 piecewise_map! {
     /// Blue-cyan-green-yellow-red map approximating the standard jet palette in
     /// normalized sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.017756, 0.013163, 0.013317]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Jet,
     [(0.0, 0.0), (0.35, 0.0), (0.66, 1.0), (0.89, 1.0), (1.0, 0.5)],
     [(0.0, 0.0), (0.125, 0.0), (0.375, 1.0), (0.64, 1.0), (0.91, 0.0), (1.0, 0.0)],
@@ -82,6 +90,10 @@ piecewise_map! {
 piecewise_map! {
     /// Five-control-point approximation of the plasma palette in normalized
     /// sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.244878, 0.150198, 0.172135]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Plasma,
     [(0.0, 0.050), (0.25, 0.250), (0.5, 0.800), (0.75, 0.960), (1.0, 0.940)],
     [(0.0, 0.030), (0.25, 0.010), (0.5, 0.130), (0.75, 0.520), (1.0, 0.975)],
@@ -91,6 +103,10 @@ piecewise_map! {
 piecewise_map! {
     /// Five-control-point approximation of the viridis palette in normalized
     /// sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.283955, 0.087324, 0.193904]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Viridis,
     [(0.0, 0.267), (0.25, 0.128), (0.5, 0.204), (0.75, 0.632), (1.0, 0.993)],
     [(0.0, 0.005), (0.25, 0.407), (0.5, 0.636), (0.75, 0.829), (1.0, 0.906)],
@@ -100,6 +116,10 @@ piecewise_map! {
 piecewise_map! {
     /// Nine-control-point approximation of the inferno palette in normalized
     /// sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.082404, 0.151097, 0.272143]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Inferno,
     [
         (0.0, 0.001), (0.125, 0.100), (0.25, 0.276),
@@ -121,6 +141,10 @@ piecewise_map! {
 piecewise_map! {
     /// Nine-control-point approximation of the magma palette in normalized
     /// sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.051013, 0.083189, 0.072631]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Magma,
     [
         (0.0, 0.001), (0.125, 0.118), (0.25, 0.304),
@@ -142,6 +166,10 @@ piecewise_map! {
 piecewise_map! {
     /// Nine-control-point approximation of the turbo palette in normalized
     /// sRGB-encoded channel space.
+    /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
+    /// 3.11.2 default 256-entry reference is bounded by `[0.402869, 0.498381, 0.387017]`.
+    /// These are measured grid maxima rounded upward to six decimal places;
+    /// they do not bound unsampled inputs or establish perceptual equivalence.
     Turbo,
     #[expect(
         clippy::approx_constant,

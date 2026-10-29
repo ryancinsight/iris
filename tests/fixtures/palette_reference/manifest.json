@@ -1,0 +1,63 @@
+{
+  "schema": 2,
+  "project": "matplotlib/matplotlib",
+  "release": "3.11.2",
+  "commit": "d3ca9172e392048ec242b90e8423e88d1a3000b2",
+  "source_sha256": {
+    "_cm.py": "44dc9e0f2801d1a04a4abc9f88bbea672ebcf2e1fd9efc4fac49e8fea9ed4f96",
+    "_cm_listed.py": "ddad3698f5129ceb1792a445371286c08bc9080298e657b3054aea19c9659ef9",
+    "colors.py": "ef4173f9e8310bc75714e32c3855719c27916c6c651b5c94e39f00163842cf04"
+  },
+  "license_sha256": "5a1a81ea301728c8bba2933da832c0cd62229daf20893a024ab3d53244468dbc",
+  "numpy": "2.4.6",
+  "lut_length": 256,
+  "grid_steps": 1024,
+  "encoding": "ieee754-binary64-u64",
+  "sampling": "floor(256*t) for 0<=t<1; t=1 selects row255",
+  "channels": "normalized sRGB-encoded RGB; reference alpha is always1",
+  "generation": "sample released default colormaps; omit constant alpha; encode RGB binary64 bits as JSON integers",
+  "palettes": {
+    "bone": {
+      "file": "bone.json",
+      "source": "_cm.py",
+      "kind": "LinearSegmentedColormap",
+      "sha256": "93e806663c2d776b40eca7ae869912bf6cb3ff9ef54c46451c776a5c9005a04b"
+    },
+    "jet": {
+      "file": "jet.json",
+      "source": "_cm.py",
+      "kind": "LinearSegmentedColormap",
+      "sha256": "1041548e7e7b14f71303565a9a26fcf4e1f845c51ae39ba2a61139dec13cd255"
+    },
+    "plasma": {
+      "file": "plasma.json",
+      "source": "_cm_listed.py",
+      "kind": "ListedColormap",
+      "sha256": "367f08669bcc0f88fbed26351860f5ce8e494246d91551b5f2a403f4f7e868e8"
+    },
+    "viridis": {
+      "file": "viridis.json",
+      "source": "_cm_listed.py",
+      "kind": "ListedColormap",
+      "sha256": "fe89c8003a5015c120db9b3330edf6c6ab5f02083164add8a3d5120e26e29c66"
+    },
+    "inferno": {
+      "file": "inferno.json",
+      "source": "_cm_listed.py",
+      "kind": "ListedColormap",
+      "sha256": "e23fe0bfc256ef8eea60e45391688c76e4b26a6cc86ef8b33060b069798e7f00"
+    },
+    "magma": {
+      "file": "magma.json",
+      "source": "_cm_listed.py",
+      "kind": "ListedColormap",
+      "sha256": "caca67c56b3dfb807108bd80366999c978ee8acb997b11544628339459dfebd6"
+    },
+    "turbo": {
+      "file": "turbo.json",
+      "source": "_cm_listed.py",
+      "kind": "ListedColormap",
+      "sha256": "d32fb4ed4a95cf2650bcfce4ffe13f65a2afbeffb902fd3cf2f46efdbb131462"
+    }
+  }
+}

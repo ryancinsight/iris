@@ -122,18 +122,22 @@
   bound stated in the docstring together with its derivation; the
   self-referential assertions in `tests/color_laws.rs:114-178` are replaced by
   or supplemented with reference-table comparisons.
-- Evidence of the gap: `src/color/map/table.rs:108-144` documents Viridis as a
+- Baseline evidence in published 0.1.2 (`345b91f0`): `src/color/map/table.rs:108-144` documents Viridis as a
   "Five-control-point approximation of the viridis palette", and
   `tests/color_laws.rs:143-149` asserts `Viridis(0.5) == [0.204, 0.636, 0.469]`
-  — the crate's own control point from `table.rs:118,126,133`. No test compares
-  any built-in map to a published table, and no approximation error bound is
-  stated anywhere in the repository.
-- Dependencies: none; its verdict decides whether a table control point is wrong,
-  so it precedes the IRIS-011 public-surface change and the first publish.
+  — the crate's own control point from `table.rs:118,126,133`. No test then compared
+  a built-in map with a published table or stated an approximation error bound.
+- Dependencies: none. Published 0.1.2 is the measured baseline; no previously
+  promised numerical fidelity limit establishes a control-point defect. The
+  IRIS-011 public-surface change remains outside this verification increment.
 - Risk/change class: `[verification]` `[patch]` (tests and docs only; a control
   point found to be wrong reclassifies the fix to `[minor]`).
 - Effort: M.
 - Status: todo.
+- Evidence: `tests/palette_reference.rs`, release-pinned fixtures/generator and
+  `docs/book/palette-reference.md`; measured bounds characterize the existing
+  approximations, without changing production control points or inventing a
+  pre-existing fidelity requirement.
 
 ## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant
 
