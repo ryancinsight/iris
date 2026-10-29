@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "project": "matplotlib/matplotlib",
   "release": "3.11.2",
   "commit": "d3ca9172e392048ec242b90e8423e88d1a3000b2",
@@ -12,51 +12,52 @@
   "numpy": "2.4.6",
   "lut_length": 256,
   "grid_steps": 1024,
+  "encoding": "ieee754-binary64-u64",
   "sampling": "floor(256*t) for 0<=t<1; t=1 selects row255",
   "channels": "normalized sRGB-encoded RGB; reference alpha is always1",
-  "generation": "sample released default colormaps; omit constant alpha; reformat RGB as JSON",
+  "generation": "sample released default colormaps; omit constant alpha; encode RGB binary64 bits as JSON integers",
   "palettes": {
     "bone": {
       "file": "bone.json",
       "source": "_cm.py",
       "kind": "LinearSegmentedColormap",
-      "sha256": "839a8f4ca1974a21718fc00d49df92b3b0d963a6c4082e64ad65b6be5eac825a"
+      "sha256": "93e806663c2d776b40eca7ae869912bf6cb3ff9ef54c46451c776a5c9005a04b"
     },
     "jet": {
       "file": "jet.json",
       "source": "_cm.py",
       "kind": "LinearSegmentedColormap",
-      "sha256": "cf290c68746ff2470e5274dc9ab4b3fe18cd91a7259a520f6ef1e51aa1cb5e23"
+      "sha256": "1041548e7e7b14f71303565a9a26fcf4e1f845c51ae39ba2a61139dec13cd255"
     },
     "plasma": {
       "file": "plasma.json",
       "source": "_cm_listed.py",
       "kind": "ListedColormap",
-      "sha256": "0bf67eec194b05d584cd8fa0ba4cd15f06e2f691155982deba7a27674b396a1d"
+      "sha256": "367f08669bcc0f88fbed26351860f5ce8e494246d91551b5f2a403f4f7e868e8"
     },
     "viridis": {
       "file": "viridis.json",
       "source": "_cm_listed.py",
       "kind": "ListedColormap",
-      "sha256": "10a3bb4767ef1a8b3cd2d9c1ebaf46c779296452e756d5a951eaa8f785699dc4"
+      "sha256": "fe89c8003a5015c120db9b3330edf6c6ab5f02083164add8a3d5120e26e29c66"
     },
     "inferno": {
       "file": "inferno.json",
       "source": "_cm_listed.py",
       "kind": "ListedColormap",
-      "sha256": "5e2231a8948248c8743eb36ff2c519659913e027394a0f621b906d932f7eda40"
+      "sha256": "e23fe0bfc256ef8eea60e45391688c76e4b26a6cc86ef8b33060b069798e7f00"
     },
     "magma": {
       "file": "magma.json",
       "source": "_cm_listed.py",
       "kind": "ListedColormap",
-      "sha256": "b9f7b351d23f29604b0af72d37c61201aeeb6bceaf46e8e910178a17e1d9536e"
+      "sha256": "caca67c56b3dfb807108bd80366999c978ee8acb997b11544628339459dfebd6"
     },
     "turbo": {
       "file": "turbo.json",
       "source": "_cm_listed.py",
       "kind": "ListedColormap",
-      "sha256": "c1a0dba90bc26653952ca91fb6e8bb08fed7e1dd987d04ca1a04811924eb0cd0"
+      "sha256": "d32fb4ed4a95cf2650bcfce4ffe13f65a2afbeffb902fd3cf2f46efdbb131462"
     }
   }
 }

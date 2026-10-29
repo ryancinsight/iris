@@ -12,6 +12,7 @@ from importlib import metadata
 import json
 import math
 import os
+import struct
 from pathlib import Path
 import sysconfig
 import tempfile
@@ -39,9 +40,10 @@ def verify_fixtures() -> None:
     """Check committed provenance and bytes without importing reference tools."""
     manifest = json.loads((OUTPUT / "manifest.json").read_text())
     expected = {
-        "schema": 1, "project": "matplotlib/matplotlib", "release": RELEASE,
+        "schema": 2, "project": "matplotlib/matplotlib", "release": RELEASE,
         "commit": COMMIT, "source_sha256": SOURCE_HASHES,
         "license_sha256": LICENSE_HASH, "lut_length": 256, "grid_steps": 1024,
+        "encoding": "ieee754-binary64-u64",
     }
     for name, value in expected.items():
         if manifest.get(name) != value:
@@ -57,7 +59,10 @@ def verify_fixtures() -> None:
         data = (OUTPUT / record["file"]).read_bytes()
         if digest(data) != record["sha256"]:
             raise ValueError(f"reference fixture drift: {name}")
-        rows = json.loads(data)
+        encoded = json.loads(data)
+        if any(type(v) is not int or not 0 <= v < 2**64 for row in encoded for v in row):
+            raise ValueError(f"invalid reference bit encoding: {name}")
+        rows = [[struct.unpack(">d", v.to_bytes(8, "big"))[0] for v in row] for row in encoded]
         if len(rows) != 256 or any(
             len(row) != 3 or any(not math.isfinite(v) or not 0 <= v <= 1 for v in row)
             for row in rows
@@ -96,7 +101,7 @@ def generate(license_text: bytes) -> dict[str, bytes]:
 
     documents = {"MATPLOTLIB-LICENSE": license_text}
     provenance = {
-        "schema": 1,
+        "schema": 2,
         "project": "matplotlib/matplotlib",
         "release": RELEASE,
         "commit": COMMIT,
@@ -105,9 +110,10 @@ def generate(license_text: bytes) -> dict[str, bytes]:
         "numpy": NUMPY,
         "lut_length": 256,
         "grid_steps": 1024,
+        "encoding": "ieee754-binary64-u64",
         "sampling": "floor(256*t) for 0<=t<1; t=1 selects row255",
         "channels": "normalized sRGB-encoded RGB; reference alpha is always1",
-        "generation": "sample released default colormaps; omit constant alpha; reformat RGB as JSON",
+        "generation": "sample released default colormaps; omit constant alpha; encode RGB binary64 bits as JSON integers",
         "palettes": {},
     }
     for name in PALETTES:
@@ -125,7 +131,8 @@ def generate(license_text: bytes) -> dict[str, bytes]:
             index = min(step // 4, 255)
             if list(actual[:3]) != rows[index] or actual[3] != 1:
                 raise ValueError(f"reference sampling convention differs: {name}, {step}")
-        text = "[\n" + ",\n".join("  " + json.dumps(row) for row in rows) + "\n]\n"
+        bit_rows = [[struct.unpack(">Q", struct.pack(">d", v))[0] for v in row] for row in rows]
+        text = "[\n" + ",\n".join("  " + json.dumps(row) for row in bit_rows) + "\n]\n"
         data = text.encode()
         filename = name + ".json"
         documents[filename] = data

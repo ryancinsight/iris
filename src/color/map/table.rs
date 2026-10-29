@@ -91,7 +91,7 @@ piecewise_map! {
     /// Five-control-point approximation of the plasma palette in normalized
     /// sRGB-encoded channel space.
     /// On `t=k/1024` (`k=0..=1024`), absolute RGB error against the Matplotlib
-    /// 3.11.2 default 256-entry reference is bounded by `[0.244877, 0.150198, 0.172135]`.
+    /// 3.11.2 default 256-entry reference is bounded by `[0.244878, 0.150198, 0.172135]`.
     /// These are measured grid maxima rounded upward to six decimal places;
     /// they do not bound unsampled inputs or establish perceptual equivalence.
     Plasma,
