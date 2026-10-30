@@ -40,7 +40,9 @@ impl<M: ColorMap, const N: usize> LookupTable<M, N> {
         reason = "N is compile-time bounded to the exact integer range of f32"
     )]
     pub fn from_map(map: M) -> Self {
-        let denominator = const { last_index::<N>() } as f32;
+        const { last_index::<N>() };
+
+        let denominator = (N - 1) as f32;
         let entries = core::array::from_fn(|index| {
             let value = Normalized::from_unit_interval(index as f32 / denominator);
             map.sample(value)

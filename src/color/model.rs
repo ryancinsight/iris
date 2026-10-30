@@ -54,6 +54,11 @@ impl Rgba {
     /// opacity. Rounding uses the exact represented input, with midpoint ties
     /// selecting the higher byte.
     ///
+    /// # Panics
+    ///
+    /// The integer conversion checks the quantizer's internal range. For
+    /// every validated `Rgba`, that range is `0..=255`, so the check cannot fail.
+    ///
     /// ```
     /// # use iris::color::Rgba;
     /// let bytes = [0, 128, 255, 128];
@@ -63,14 +68,11 @@ impl Rgba {
     /// # Ok::<(), iris::IrisError>(())
     /// ```
     #[must_use]
-    #[expect(
-        clippy::cast_possible_truncation,
-        reason = "validated normalized channels prove rounded quantizer output lies in u8"
-    )]
     pub fn to_rgba8(self) -> [u8; 4] {
         self.0.map(|value| {
             // Rgba construction already proves the unit-interval invariant.
-            nearest_index::<256>(Normalized::from_unit_interval(value)) as u8
+            u8::try_from(nearest_index::<256>(Normalized::from_unit_interval(value)))
+                .expect("validated channel quantizes to an index in 0..=255")
         })
     }
 }

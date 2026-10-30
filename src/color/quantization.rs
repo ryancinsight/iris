@@ -28,8 +28,8 @@ pub(crate) fn nearest_index<const N: usize>(value: Normalized) -> usize {
     let bits = value.get().to_bits();
     let half_shift = (149 - ((bits >> 23) & 0xff)).min(48);
     let significand = u64::from((bits & 0x007f_ffff) | 0x0080_0000);
-    let numerator = significand * last as u64;
-    (((numerator >> half_shift) + 1) >> 1) as usize
+    let numerator = significand * u64::try_from(last).expect("bounded table index fits u64");
+    usize::try_from(((numerator >> half_shift) + 1) >> 1).expect("rounded index is at most N - 1")
 }
 
 #[cfg(test)]
