@@ -12,6 +12,7 @@ mod lookup_table;
 pub mod map;
 mod model;
 mod normalized;
+mod quantization;
 
 pub use lookup_table::LookupTable;
 pub use map::{ColorMap, NamedColorMap};

@@ -105,6 +105,11 @@ strategy adds no runtime storage. `LookupTable::sample` selects the *nearest*
 of those `N` entries; it does not interpolate between them, so table resolution
 sets the quantization step of the cached law.
 
+Indexing rounds the exact represented coordinate against the ideal uniform
+grid, with midpoint ties choosing the higher entry. Byte conversion uses the
+same quantizer at 256 levels. The [quantization proof](quantization.md) states
+the integer bounds and the independent boundary tests.
+
 ## Custom Maps
 
 Implement `ColorMap` on any `Copy` type to add a custom law:
