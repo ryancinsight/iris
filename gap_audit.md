@@ -1,5 +1,19 @@
 # Iris gap audit
 
+## Finding 2026-10-30: premature rounding in nearest-bin quantization
+
+Main `8e7ea244` fails two public regressions: the binary32 coordinate directly
+below one half selects entry one of a two-entry table, and input `0x3b008080`
+produces byte one even though its exact scaled value is below one half. At
+maximum resolution, adding a half also perturbs an odd integral index.
+
+IRIS-016 replaces both floating-point offset/cast paths with one exact integer
+codec. The proof and independent oracle are documented in
+`docs/book/quantization.md`; tests cover off-node boundaries that the existing
+sample-node and byte-round-trip laws miss. The table limits, validation and
+palette values stay intact. Final independent review and delivery gates remain
+required; the unrelated IRIS-003 authentication acceptance remains open.
+
 ## Finding 2026-08-20: iris scope-vs-delivery audit
 
 Static audit of `9672fc0876306fbb76d58fb3af37e8cbd5998b42` on `main`. No build,

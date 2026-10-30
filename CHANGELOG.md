@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.4 — 2026-10-30
+
+### Fixed
+
+- [patch] Quantize the exact represented color coordinate to the nearest byte
+  or lookup-table index, with ties upward. Floating-point rounding before the
+  integer conversion could previously select the upper bin below a midpoint
+  and perturb an integral index at the largest supported table resolution.
+- Share one allocation-free integer codec across both conversions. Retain
+  channel validation, table bounds, palette values, features and dependencies.
+- Cover midpoint neighbors, all byte boundaries, signed zero, subnormals and
+  the maximum table resolution against an independent exact-product oracle.
+
+
 All notable changes are documented in this file.
 
 ## 0.1.3

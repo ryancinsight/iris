@@ -1,5 +1,21 @@
 # Backlog
 
+<a id="iris-016"></a>
+## IRIS-016 — Exact nearest-bin quantization [patch] — todo
+
+- Priority: correctness.
+- Basis: public regressions on main `8e7ea244` return upper bins for binary32
+  inputs `0x3effffff` (two-entry lookup) and `0x3b008080` (byte conversion),
+  although both exact scaled values lie below a midpoint.
+- Scope: one internal const-resolution quantizer, both existing callers,
+  boundary regressions and the [integer proof](docs/book/quantization.md).
+- Acceptance: exact nearest rounding with upward ties across existing table
+  bounds; final feature, floor, lint, test, documentation and delivery gates.
+- Evidence: `tests/quantization_regressions.rs` and defining-module maximum-
+  resolution tests; no palette, dependency, authentication or hook changes.
+- Owner: `codex:01a17995-4c0b-701d-8625-8650165230c2`, branch
+  `fix/iris-nearest-quantization`; final independent review and delivery pending.
+
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry

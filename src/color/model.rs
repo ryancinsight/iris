@@ -5,6 +5,7 @@
 //! quantizes an [`Rgba`] value to bytes.
 
 use super::normalized::in_unit_interval;
+use super::{Normalized, quantization::nearest_index};
 use crate::{IrisError, IrisResult};
 
 /// Four normalized channels with sRGB RGB and linear-opacity alpha semantics.
@@ -50,7 +51,8 @@ impl Rgba {
     /// RGB values are already sRGB-encoded, so this applies the uniform
     /// quantizer `round(255v)` directly and performs no transfer-function
     /// conversion. Alpha uses the same quantizer because it is normalized
-    /// opacity.
+    /// opacity. Rounding uses the exact represented input, with midpoint ties
+    /// selecting the higher byte.
     ///
     /// ```
     /// # use iris::color::Rgba;
@@ -63,14 +65,12 @@ impl Rgba {
     #[must_use]
     #[expect(
         clippy::cast_possible_truncation,
-        clippy::cast_sign_loss,
         reason = "validated normalized channels prove rounded quantizer output lies in u8"
     )]
     pub fn to_rgba8(self) -> [u8; 4] {
         self.0.map(|value| {
-            // This narrowing conversion is the specified uniform quantizer
-            // q(v) = round(255v), whose range is proven to fit in u8.
-            (value * 255.0 + 0.5) as u8
+            // Rgba construction already proves the unit-interval invariant.
+            nearest_index::<256>(Normalized::from_unit_interval(value)) as u8
         })
     }
 }
