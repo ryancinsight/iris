@@ -17,10 +17,11 @@ pub(crate) const fn last_index<const N: usize>() -> usize {
 /// A normal binary32 input is `significand / 2^shift`, where the significand
 /// has 24 bits and `shift = 150 - biased_exponent`. The structural bound makes
 /// the integer product less than `2^48`. For `shift >= 49` it is below one
-/// half, including every subnormal and either signed zero. Otherwise adding
-/// the exact half-denominator and shifting implements nearest rounding without
-/// first rounding a floating-point product. The sum is below `2^49`, and the
-/// result is at most `N - 1`, so both the accumulator and result fit.
+/// half, including every subnormal and either signed zero. Shifting by
+/// `min(shift - 1, 48)` therefore gives twice the scaled value, truncated,
+/// or zero for those tiny inputs. Adding one and halving rounds exactly with
+/// upward ties, without rounding a floating-point product first. The shifted
+/// value is at most `2 * (N - 1)`, so the accumulator and result both fit.
 #[inline]
 #[expect(
     clippy::cast_possible_truncation,
@@ -29,13 +30,10 @@ pub(crate) const fn last_index<const N: usize>() -> usize {
 pub(crate) fn nearest_index<const N: usize>(value: Normalized) -> usize {
     let last = const { last_index::<N>() };
     let bits = value.get().to_bits();
-    let shift = 150 - ((bits >> 23) & 0xff);
-    if shift >= 49 {
-        return 0;
-    }
+    let half_shift = (149 - ((bits >> 23) & 0xff)).min(48);
     let significand = u64::from((bits & 0x007f_ffff) | 0x0080_0000);
     let numerator = significand * last as u64;
-    ((numerator + (1_u64 << (shift - 1))) >> shift) as usize
+    (((numerator >> half_shift) + 1) >> 1) as usize
 }
 
 #[cfg(test)]

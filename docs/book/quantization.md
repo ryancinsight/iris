@@ -31,12 +31,19 @@ the 24-bit significand, including its implicit leading bit. Then
 
 Write `k = 150 - e`. If `k >= 49`, the scaled coordinate is strictly below
 one half, so its nearest index is zero. Every subnormal, either signed zero
-and every smaller normal input falls in this branch; no implicit-leading-bit
-interpretation is applied to a subnormal. Otherwise `23 <= k <= 48`, because
-the validated input is at most one. The result is exactly
-`(p + 2^(k - 1)) >> k`. The addition is below `2^49`, all shifts fit `u64`,
-and the result lies in `[0, N - 1]`, which fits `usize`. The byte specialization
-therefore fits `u8` without saturation.
+and every smaller normal input belongs to this case. Otherwise
+`23 <= k <= 48`, because the validated input is at most one.
+
+The branch-free implementation sets `h = min(k - 1, 48)` and returns
+`((p >> h) + 1) >> 1`. For a normal input outside the tiny case, this is
+`floor((floor(2 * (N - 1) * v) + 1) / 2)`, exactly the nearest quantizer with
+upward ties. In the tiny case, shifting any product below `2^48` by 48 gives
+zero. This remains true for subnormal/zero encodings even though their
+implicit-leading-bit interpretation is inapplicable. The cap deliberately
+discards that constructed product, rather than relying on it as a decoded
+subnormal value. The shifted value is at most `2 * (N - 1)`; adding one fits
+`u64`, all shifts are between 22 and 48, and the result lies in `[0, N - 1]`,
+which fits `usize`. The byte specialization fits `u8` without saturation.
 
 The implementation uses one const-resolution codec and performs no allocation
 or floating-point widening. Construction still samples each map at the rounded
