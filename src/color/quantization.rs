@@ -23,10 +23,6 @@ pub(crate) const fn last_index<const N: usize>() -> usize {
 /// upward ties, without rounding a floating-point product first. The shifted
 /// value is at most `2 * (N - 1)`, so the accumulator and result both fit.
 #[inline]
-#[expect(
-    clippy::cast_possible_truncation,
-    reason = "the exact rounded result is at most N - 1, which fits usize"
-)]
 pub(crate) fn nearest_index<const N: usize>(value: Normalized) -> usize {
     let last = const { last_index::<N>() };
     let bits = value.get().to_bits();
