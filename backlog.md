@@ -4,6 +4,7 @@
 ## IRIS-016 — Exact nearest-bin quantization [patch] — todo
 
 - Priority: correctness.
+- milestone: M-correctness.
 - Basis: public regressions on main `8e7ea244` return upper bins for binary32
   inputs `0x3effffff` (two-entry lookup) and `0x3b008080` (byte conversion),
   although both exact scaled values lie below a midpoint.
@@ -29,6 +30,7 @@
   the crate's trusted publisher and trusted-publishing-only mode is enabled.
 - Risk/class: `[patch]` release infrastructure.
 - Status: in progress.
+- milestone: M-1.0.
 - Current state (2026-08-15, audited pre-change `origin/main` `bc47ce3`): the
   package identity is synchronized as registry package `iris-viz` with Rust
   import path `iris`, and hosted provider CI passes in run `31865323610`. A
@@ -150,6 +152,7 @@
   point found to be wrong reclassifies the fix to `[minor]`).
 - Effort: M.
 - Status: todo.
+- milestone: M-contract-verification.
 - Evidence: `tests/palette_reference.rs`, release-pinned fixtures/generator and
   `docs/book/palette-reference.md`; measured bounds characterize the existing
   approximations, without changing production control points or inventing a
@@ -175,6 +178,7 @@
 - Risk/change class: `[verification]` `[patch]`.
 - Effort: S.
 - Status: todo.
+- milestone: M-contract-verification.
 
 ## IRIS-008 — Exercise the render seam with a real view-to-frame backend
 
@@ -246,6 +250,7 @@
 - Risk/change class: `[arch]` `[minor]` (additive trait impl on a public type).
 - Effort: S.
 - Status: todo.
+- milestone: M-contract-verification.
 
 ## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
 
@@ -270,6 +275,7 @@
 - Risk/change class: `[arch]` `[major]` (public item removal).
 - Effort: S.
 - Status: todo.
+- milestone: M-contract-verification.
 
 ## IRIS-012 — Retire the duplicate ADR index `docs/adr/INDEX.md`
 
@@ -330,6 +336,7 @@
 - Risk/change class: `[docs]` `[patch]`.
 - Effort: S.
 - Status: todo.
+- milestone: M-contract-verification.
 
 ## IRIS-015 — Measure the lookup-table fast path
 
@@ -355,3 +362,4 @@
 - Risk/change class: `[perf]` `[patch]`.
 - Effort: S.
 - Status: todo.
+- milestone: M-contract-verification.
