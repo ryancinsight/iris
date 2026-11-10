@@ -11,3 +11,4 @@
 | --- | ----- | ------ |
 | [0001](0001-domain-neutral-visualization-contract.md) | Domain-neutral visualization contract | Accepted |
 | [0002](0002-consumer-color-law-consolidation.md) | Consumer color-law consolidation | Accepted |
+| [0003](0003-release-scope-1-0.md) | Iris release scope for 1.0 | Accepted |
