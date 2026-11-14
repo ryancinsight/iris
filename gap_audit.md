@@ -106,11 +106,6 @@ wrong, since those maps are piecewise control-point tables evaluated by
 nearest entry without interpolating; and that "`RenderBackend` is generic over
 any `ColorMap`", which `src/render/backend.rs:7` contradicts.
 
-Unverifiable from inside this repository, filed rather than edited:
-`docs/book/stack_position.md` lists `helios` as a consumer, for which this
-repository holds no merge evidence, while `ritk`, `CFDrs`, and `kwavers` each
-have it in `backlog.md` (IRIS-006 … IRIS-015 detail this as IRIS-014).
-
 ### Process and provenance defects
 
 IRIS-009 and IRIS-012 closed in PR #22: the ADR index check runs in CI through atlas's
