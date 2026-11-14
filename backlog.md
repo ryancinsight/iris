@@ -2,26 +2,22 @@
 
 <a id="IRIS-017"></a>
 ## IRIS-017 — Add metis to the consumer table and correct its wording
-
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
-- Outcome: the `## Consumers` table in `docs/book/stack_position.md` lists every
-  stack repository whose manifests declare `iris-viz`, and its prose is true of
-  every row.
-- Scope: that table and its introduction only.
-- Gap: metis declares `iris` in `[dependencies]` of `metis-frontend` and
-  `metis-ui-lang` and uses `RenderBackend` in both (metis `e5395a37ff63`), yet
-  has no row. "Each row names a package" is false for `CFDrs` and `ritk`
-  (virtual workspaces whose root declares only `[workspace.dependencies]`), and
-  `cfd-1d` and `cfd-2d` declare `iris` only under `[dev-dependencies]`.
-- Oracle: at each member's default-branch commit, the repositories whose
-  `Cargo.toml` files name `iris-viz` equal the table's row set; the sentence
-  says "repository" and marks dev-only manifests. Fails at the basis (no metis row).
+- Outcome: `## Consumers` in `docs/book/stack_position.md` lists every stack
+  repository whose manifests declare `iris-viz`, and its prose is true of each row.
+- Scope: that table and its introduction.
+- Gap: metis declares `iris` under `[dependencies]` in `metis-frontend` and
+  `metis-ui-lang` and uses `RenderBackend` there (metis `e5395a37ff63`), but has
+  no row. "Each row names a package" is false for the virtual workspaces `CFDrs`
+  and `ritk`, and `cfd-1d` and `cfd-2d` declare `iris` only as a dev-dependency.
+- Oracle: at each member's default-branch commit the repositories whose
+  `Cargo.toml` files name `iris-viz` equal the table's rows; the wording says
+  "repository" and marks dev-only manifests. Fails at the basis (no metis row).
 - Non-goals: the generator (IRIS-019); the `RenderBackend` sentence (IRIS-018).
 - Class: `[docs]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
 
 <a id="IRIS-018"></a>
 ## IRIS-018 — Correct who supplies the `RenderBackend` implementation
-
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
 - Outcome: `docs/book/stack_position.md` states which stack consumers implement
   `RenderBackend` and does not claim it of the others.
@@ -37,59 +33,51 @@
 
 <a id="IRIS-019"></a>
 ## IRIS-019 — Check the consumer table against consumer manifests
-
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
-- Outcome: the consumer table cannot drift from the stack's manifests: a
-  committed check regenerates its manifest and coverage columns and diffs them.
+- Outcome: the consumer table cannot drift from the stack's manifests; a committed
+  check regenerates its manifest and coverage columns and diffs them.
 - Scope: a stack-owned generator in atlas `scripts/` (reverse dependencies need
   every member's `cargo metadata`), a marked generated region in
-  `stack_position.md`, and the invocation in iris CI. Iris cannot see its
-  consumers' graphs, so the generator does not live here.
-- Oracle: (a) at each row's recorded revision the generated manifest column
-  equals the table, a pure function of that tree, failing on a hand edit; (b) a
-  scheduled meta scan at current default commits fails when a repository
-  depending on `iris-viz` has no row. A synthetic omitted row makes (b) fail.
-- Non-goals: generating the "Iris items imported" prose column.
+  `stack_position.md`, and its invocation in iris CI.
+- Oracle: (a) at each row's recorded revision the generated manifest column equals
+  the table, failing on a hand edit; (b) a scheduled meta scan at current default
+  commits fails when a repository depending on `iris-viz` has no row, shown by a
+  synthetic omitted row.
+- Non-goals: the "Iris items imported" prose column.
 - Next: the lead files the atlas meta item that owns the generator and links here.
 - Class: `[verification]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
 
 <a id="IRIS-011"></a>
 ## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
-
-- Status: todo; priority: tightening; milestone: M-contract-verification; needs: a
-  ritk migration item for the call sites below (cross-repo, unfiled).
-- Outcome: the byte-to-unit-interval conversion goes through the std conversion
-  lattice and no public identifier carries a scalar-type suffix.
+- Status: todo; priority: tightening; milestone: M-contract-verification; needs: none in iris (cross-repo: ritk).
+- Outcome: the byte-to-unit-interval conversion uses the std conversion lattice
+  and no public identifier carries a scalar-type suffix.
 - Scope: `src/color/normalized.rs` (`from_u8` at :68, doctest :64-65),
   `docs/book/colormaps.md:35,52`, `tests/color_laws.rs:24,28,99`.
-- Non-goals: changing `n = value / 255` (exact, tested); a `TryFrom`.
-- Oracle: `impl From<u8> for Normalized` exists, `from_u8` is gone with no
-  deprecated alias, every in-repo site is converted, and
-  `byte_coordinates_cover_the_uniform_unit_grid_exactly` passes bit for bit.
-- Co-evolution: ritk calls `Normalized::from_u8` in `ritk-snap` and `ritk-vtk`
-  (9 lines at ritk `1f480cce6b1f`); `CFDrs` and metis call none. The removal
-  breaks 0.1.x, admitted by the 0.2.0 milestone: land the iris change, then one
-  ritk requirement plus call-site unit, in dependency order.
+- Oracle: `impl From<u8> for Normalized` exists, `from_u8` is gone with no alias,
+  every in-repo site is converted, and
+  `byte_coordinates_cover_the_uniform_unit_grid_exactly` passes bit for bit
+  (`n = value / 255` unchanged; no `TryFrom`).
+- Co-evolution: ritk calls `Normalized::from_u8` at 8 sites in `ritk-snap` and
+  `ritk-vtk` (ritk `1f480cce6b1f`); `CFDrs` and metis call none. The removal
+  breaks 0.1.x, which 0.2.0 admits. An unfiled ritk item prepares the migration
+  against this candidate before this PR is ready and lands after it.
 - Class: `[arch]` `[major]` (public item removal). basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
 
 <a id="IRIS-015"></a>
 ## IRIS-015 — Measure the lookup-table fast path
-
 - Status: todo; priority: tightening; milestone: M-contract-verification; needs: none.
 - Outcome: the premise behind `LookupTable` (a cached nearest-entry lookup beats
-  direct map evaluation by enough to justify the type) is measured.
-- Scope: one criterion bench `lookup_table_sample` comparing
-  `LookupTable::<M, N>::sample` with `M::sample` for an analytic law
-  (`Grayscale`, `BlueRed`), a table-defined law (`Viridis`, `Turbo`) and
-  `NamedColorMap`, at two or three resolutions; a committed wall-clock budget.
-- Non-goals: optimizing any map before a profile names its bound; a bench whose
-  single-iteration smoke cannot fit the 30 s budget in `.config/nextest.toml`.
-- Oracle: `cargo bench --locked --bench lookup_table_sample -- --test` passes
-  inside the test budget, and the committed baseline records median and
-  confidence interval per case with the machine class in the header.
-- Gap: `src/color/lookup_table.rs` is a precomputation cache and the README
-  asserts allocation-free, dispatch-free operation with no timing evidence;
-  `benches/` does not exist.
+  direct map evaluation) is measured.
+- Scope: criterion bench `lookup_table_sample` comparing
+  `LookupTable::<M, N>::sample` with `M::sample` for `Grayscale`, `BlueRed`,
+  `Viridis`, `Turbo` and `NamedColorMap` at two or three resolutions; a committed
+  wall-clock budget.
+- Non-goals: optimizing a map before a profile names its bound.
+- Oracle: `cargo test --locked --bench lookup_table_sample` passes inside the
+  test budget; the committed baseline records median and confidence interval per
+  case with the machine class in the header.
+- Gap: no `benches/` directory; the README's allocation-free claim has no timing.
 - Class: `[perf]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
 
 <a id="IRIS-003"></a>
