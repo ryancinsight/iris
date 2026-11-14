@@ -213,28 +213,6 @@
 - Effort: S.
 - Status: done 2026-09-02 (PR #22). The generator exists: atlas's `scripts/adr-index.py`, run through the reusable `adr-index-guard.yml` as the `adr-index` job in `ci.yml` (strict form); the check fails on a hand-edited index, and `docs/adr/README.md` is byte-identical to its output. The header still names `scripts/adr-index.py` — the atlas generator's own emitted text, changing stack-wide under atlas `ATLAS-ADR-FORM-NORMALIZATION-2026-09-02`.
 
-## IRIS-010 — Implement the error trait unconditionally
-
-- Outcome: `IrisError` implements the error trait for `no_std` consumers, not
-  only under the `std` feature.
-- Scope: `src/error.rs`; the feature table in `docs/book/stack_position.md`.
-- Non-goals: adding a source chain, which the enum has no wrapped causes for;
-  adding an error-handling dependency.
-- Acceptance oracle: `cargo check --no-default-features` passes with an
-  unconditional `impl core::error::Error for IrisError`, and a test asserts the
-  impl is reachable under `--no-default-features`.
-- Evidence of the gap: `src/error.rs:75-76` gates the impl on
-  `#[cfg(feature = "std")]`. `core::error::Error` is stable far below the
-  crate's `rust-version = "1.95"` (`Cargo.toml:12`), so the gate denies
-  `no_std` consumers an error trait for no reason, while `src/lib.rs:7-8`
-  advertises `no_std` compatibility.
-- Dependencies: none; hygiene follows the IRIS-006 verdict and the IRIS-011
-  public-surface change.
-- Risk/change class: `[arch]` `[minor]` (additive trait impl on a public type).
-- Effort: S.
-- Status: todo.
-- milestone: M-contract-verification.
-
 ## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
 
 - Outcome: the byte-to-unit-interval conversion is expressed through the std

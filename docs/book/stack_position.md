@@ -58,7 +58,8 @@ All import paths remain `use iris::…` unchanged.
 
 | Feature | Default | Description |
 |---------|---------|-------------|
-| `std` | yes | Enable `std`-only functionality |
+| `std` | yes | Link the standard library; without it the crate is `no_std` with `alloc` |
 | `serde` | no | Derive `Serialize`/`Deserialize` for `NamedColorMap` |
 
 Iris is `no_std`-compatible with an allocator when `default-features = false`.
+`IrisError` implements `core::error::Error` in both configurations.

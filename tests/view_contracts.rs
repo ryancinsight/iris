@@ -163,3 +163,18 @@ fn render_backend_maps_scalar_view_and_reuses_rgba_storage() {
     );
     assert_eq!(second_frame.as_ptr(), first_pointer);
 }
+
+#[test]
+fn iris_error_implements_core_error_with_leaf_display() {
+    let error = IrisError::ShapeCardinalityMismatch {
+        expected: 4,
+        actual: 3,
+    };
+    let dyn_error: &dyn core::error::Error = &error;
+
+    assert_eq!(
+        dyn_error.to_string(),
+        "scalar-field shape requires 4 values, got 3"
+    );
+    assert!(dyn_error.source().is_none());
+}
