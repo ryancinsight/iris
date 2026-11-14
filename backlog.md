@@ -1,5 +1,98 @@
 # Backlog
 
+<a id="IRIS-017"></a>
+## IRIS-017 — Add metis to the consumer table and correct its wording
+
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: the `## Consumers` table in `docs/book/stack_position.md` lists every
+  stack repository whose manifests declare `iris-viz`, and its prose is true of
+  every row.
+- Scope: that table and its introduction only.
+- Gap: metis declares `iris` in `[dependencies]` of `metis-frontend` and
+  `metis-ui-lang` and uses `RenderBackend` in both (metis `e5395a37ff63`), yet
+  has no row. "Each row names a package" is false for `CFDrs` and `ritk`
+  (virtual workspaces whose root declares only `[workspace.dependencies]`), and
+  `cfd-1d` and `cfd-2d` declare `iris` only under `[dev-dependencies]`.
+- Oracle: at each member's default-branch commit, the repositories whose
+  `Cargo.toml` files name `iris-viz` equal the table's row set; the sentence
+  says "repository" and marks dev-only manifests. Fails at the basis (no metis row).
+- Non-goals: the generator (IRIS-019); the `RenderBackend` sentence (IRIS-018).
+- Class: `[docs]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
+
+<a id="IRIS-018"></a>
+## IRIS-018 — Correct who supplies the `RenderBackend` implementation
+
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: `docs/book/stack_position.md` states which stack consumers implement
+  `RenderBackend` and does not claim it of the others.
+- Scope: the "Where Iris Sits" paragraph (`stack_position.md:29-30`).
+- Gap: it says consumers "supply the `RenderBackend` implementation". `git grep
+  RenderBackend` finds no match in `CFDrs` or `ritk` at their default
+  branches; only metis (`metis-frontend`, `metis-ui-lang`) uses it.
+- Oracle: for every repository the sentence names as an implementor, `git grep
+  "impl.*RenderBackend"` at its default-branch commit matches; none is named
+  otherwise. Fails at the basis for `CFDrs` and `ritk`.
+- Non-goals: the consumer table (IRIS-017).
+- Class: `[docs]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
+
+<a id="IRIS-019"></a>
+## IRIS-019 — Check the consumer table against consumer manifests
+
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: the consumer table cannot drift from the stack's manifests: a
+  committed check regenerates its manifest and coverage columns and diffs them.
+- Scope: a stack-owned generator in atlas `scripts/` (reverse dependencies need
+  every member's `cargo metadata`), a marked generated region in
+  `stack_position.md`, and the invocation in iris CI. Iris cannot see its
+  consumers' graphs, so the generator does not live here.
+- Oracle: (a) at each row's recorded revision the generated manifest column
+  equals the table, a pure function of that tree, failing on a hand edit; (b) a
+  scheduled meta scan at current default commits fails when a repository
+  depending on `iris-viz` has no row. A synthetic omitted row makes (b) fail.
+- Non-goals: generating the "Iris items imported" prose column.
+- Next: the lead files the atlas meta item that owns the generator and links here.
+- Class: `[verification]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
+
+<a id="IRIS-011"></a>
+## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
+
+- Status: todo; priority: tightening; milestone: M-contract-verification; needs: a
+  ritk migration item for the call sites below (cross-repo, unfiled).
+- Outcome: the byte-to-unit-interval conversion goes through the std conversion
+  lattice and no public identifier carries a scalar-type suffix.
+- Scope: `src/color/normalized.rs` (`from_u8` at :68, doctest :64-65),
+  `docs/book/colormaps.md:35,52`, `tests/color_laws.rs:24,28,99`.
+- Non-goals: changing `n = value / 255` (exact, tested); a `TryFrom`.
+- Oracle: `impl From<u8> for Normalized` exists, `from_u8` is gone with no
+  deprecated alias, every in-repo site is converted, and
+  `byte_coordinates_cover_the_uniform_unit_grid_exactly` passes bit for bit.
+- Co-evolution: ritk calls `Normalized::from_u8` in `ritk-snap` and `ritk-vtk`
+  (9 lines at ritk `1f480cce6b1f`); `CFDrs` and metis call none. The removal
+  breaks 0.1.x, admitted by the 0.2.0 milestone: land the iris change, then one
+  ritk requirement plus call-site unit, in dependency order.
+- Class: `[arch]` `[major]` (public item removal). basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
+
+<a id="IRIS-015"></a>
+## IRIS-015 — Measure the lookup-table fast path
+
+- Status: todo; priority: tightening; milestone: M-contract-verification; needs: none.
+- Outcome: the premise behind `LookupTable` (a cached nearest-entry lookup beats
+  direct map evaluation by enough to justify the type) is measured.
+- Scope: one criterion bench `lookup_table_sample` comparing
+  `LookupTable::<M, N>::sample` with `M::sample` for an analytic law
+  (`Grayscale`, `BlueRed`), a table-defined law (`Viridis`, `Turbo`) and
+  `NamedColorMap`, at two or three resolutions; a committed wall-clock budget.
+- Non-goals: optimizing any map before a profile names its bound; a bench whose
+  single-iteration smoke cannot fit the 30 s budget in `.config/nextest.toml`.
+- Oracle: `cargo bench --locked --bench lookup_table_sample -- --test` passes
+  inside the test budget, and the committed baseline records median and
+  confidence interval per case with the machine class in the header.
+- Gap: `src/color/lookup_table.rs` is a precomputation cache and the README
+  asserts allocation-free, dispatch-free operation with no timing evidence;
+  `benches/` does not exist.
+- Class: `[perf]` `[patch]`. basis: 2661cc561084944b46a59ed0e5ecbb8d191a9f33.
+
+<a id="IRIS-003"></a>
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
@@ -29,276 +122,3 @@
   trusted-publishing-only, and verify the crates.io index and the GitHub
   Release. The trusted-publisher configuration is an external repository
   setting that no repository change can supply.
-
-## IRIS-001 — Public visualization foundation
-
-- Outcome: public Iris repository with real shared color computation and two RITK consumers.
-- Scope: Iris color/view/render contracts; `ritk-snap` and `ritk-vtk` color-law migration; Atlas registration.
-- Non-goals: formats, GPU mechanics, UI state, domain interpretation, Kwavers migration.
-- Acceptance: Iris gates pass; both RITK packages pass focused differential tests; public default revisions are anonymously readable; Atlas pins both merged defaults.
-- Risk/class: `[arch]` `[minor]`.
-- Evidence: Iris PR 1 merged as `e2edd476`; RITK PRs 46 and 47 merged the
-  direct two-package consumer cutover and closure as `1bc665d4` and
-  `a36e65df`; Atlas PR 71 registered the public provider and initial consumer
-  revision as `6740296b`.
-- Status: done.
-
-## Ready after IRIS-001
-
-- Extract repeated CFDrs/Kwavers plot-series assembly onto Iris borrowed views after consumer contract audit.
-
-## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant [verification] [patch] — done 2026-08-21
-
-- **Owner:** Codex; branch `fix/iris-map-coverage`.
-- **Scope:** the completeness test in `src/color/map/named.rs` and this backlog.
-- **Correction to the original audit item:** an integration test in
-  `tests/color_laws.rs` cannot exhaustively match the public
-  `#[non_exhaustive]` enum. The defining module is the only sound location for
-  the no-wildcard match while preserving the public forward-compatibility
-  contract.
-- **Acceptance:** adding a variant requires a new exhaustive-match arm, and
-  the test rejects duplicates or omissions in `NamedColorMap::ALL`.
-- **Evidence:** the defining-module test exhaustively matches all 14 variants,
-  rejects duplicate or omitted entries, and passes with 19/19 Nextest tests,
-  warning-denied Clippy, three doctests, and warning-clean Rustdoc.
-
-## IRIS-004 — Kwavers color-law consolidation
-
-- Outcome: migrate Kwavers volume-render transfer functions to Iris so shared
-  visualization laws are owned by one package.
-- Scope: add missing Iris named maps required by Kwavers and remove duplicated
-  map tables from `kwavers-analysis`.
-- Non-goals: Kwavers GPU mechanics, domain interpretation, and plot-series
-  extraction.
-- Acceptance: Iris exposes `Inferno`, `Magma`, and `Turbo` as built-in
-  `NamedColorMap` variants; `kwavers-analysis` consumes Iris `LookupTable` and
-  contains no local implementations for those maps.
-- Risk/class: `[arch]` `[minor]`.
-- Status: done.
-
-## IRIS-005 — ADR index governance slice
-
-- Outcome: synchronize the generated ADR index with Iris's canonical ADR
-  headers.
-- Scope: `docs/adr/README.md` and this backlog entry.
-- Non-goals: no ADR decision changes.
-- Acceptance: the generated index lists ADR 0001 and 0002 as `Accepted` and
-  excludes non-ADR files.
-- Risk/class: `[patch]` documentation cleanup.
-- Evidence: both ADR files already carry `Status: Accepted`; the index now
-  matches the generator's canonical output.
-- Status: done 2026-08-14.
-
-## IRIS-002 — CFDrs color-law ownership
-
-- Outcome: Iris owns the exact blue-to-red law required by CFDrs, allowing the
-  consumer's duplicated map enum and formulas to be deleted.
-- Scope: one additive map strategy, runtime selection, laws, documentation,
-  and direct CFDrs migration.
-- Non-goals: CFD field interpretation, Plotters rendering, scalar-range
-  reduction, and the actively claimed Kwavers renderer.
-- Acceptance: exhaustive channel laws and exact endpoint/complement tests pass;
-  CFDrs consumes `NamedColorMap` directly and contains no local map enum or
-  color formula.
-- Risk/class: `[arch]` `[minor]` in Iris; `[arch]` `[major]` in CFDrs.
-- Evidence: Iris PR 3 merged the provider law as `ef43861a`; CFDrs PR 303
-  merged the direct consumer cutover as `394c9977`. The consumer passed 176
-  `cfd-schematics` tests, 10 focused iterator/window tests, 16 doctests,
-  warning-denied Clippy and Rustdoc, feature checks, and a rendered Venturi
-  pressure-field inspection.
-- Status: done.
-
-## IRIS-006 — Reference-value agreement for palette-approximating maps
-
-- Outcome: every built-in map that documents itself as an approximation of a
-  published palette carries a measured, bounded agreement test against that
-  published reference, or its documentation stops naming the palette.
-- Scope: `Bone`, `Jet`, `Plasma`, `Viridis`, `Inferno`, `Magma`, `Turbo` in
-  `src/color/map/table.rs`; a committed reference fixture of the published
-  channel tables; a derived per-channel error bound; the map docstrings.
-- Non-goals: changing any control point without a recorded derivation; adding
-  CAM02-UCS or Lab machinery; claiming perceptual uniformity.
-- Acceptance oracle: for each named map, the maximum per-channel deviation from
-  the published reference table over the 1,025-point grid is asserted against a
-  bound stated in the docstring together with its derivation; the
-  self-referential assertions in `tests/color_laws.rs:114-178` are replaced by
-  or supplemented with reference-table comparisons.
-- Baseline evidence in published 0.1.2 (`345b91f0`): `src/color/map/table.rs:108-144` documents Viridis as a
-  "Five-control-point approximation of the viridis palette", and
-  `tests/color_laws.rs:143-149` asserts `Viridis(0.5) == [0.204, 0.636, 0.469]`
-  — the crate's own control point from `table.rs:118,126,133`. No test then compared
-  a built-in map with a published table or stated an approximation error bound.
-- Dependencies: none. Published 0.1.2 is the measured baseline; no previously
-  promised numerical fidelity limit establishes a control-point defect. The
-  IRIS-011 public-surface change remains outside this verification increment.
-- Risk/change class: `[verification]` `[patch]` (tests and docs only; a control
-  point found to be wrong reclassifies the fix to `[minor]`).
-- Effort: M.
-- Status: todo.
-- milestone: M-contract-verification.
-- Evidence: `tests/palette_reference.rs`, release-pinned fixtures/generator and
-  `docs/book/palette-reference.md`; measured bounds characterize the existing
-  approximations, without changing production control points or inventing a
-  pre-existing fidelity requirement.
-
-## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant
-
-- Outcome: adding a `NamedColorMap` variant without adding it to `ALL` fails to
-  compile or fails a test, so the exhaustive-grid law test cannot silently skip
-  a map.
-- Scope: one test in `tests/color_laws.rs` that matches exhaustively over
-  `NamedColorMap` and asserts membership in `ALL`.
-- Non-goals: changing the stable display order of `ALL` or the
-  `#[non_exhaustive]` attribute.
-- Acceptance oracle: the new test contains an exhaustive `match` over every
-  variant with no wildcard arm, and asserts that `ALL` has the same length as
-  the variant count and contains each variant exactly once.
-- Evidence of the gap: `src/color/map/named.rs:55-70` hardcodes
-  `pub const ALL: [Self; 14]` with no compile-time or test-time link to the
-  enum declaration at `named.rs:16-51`; `tests/color_laws.rs:39-50` iterates
-  `ALL` only, so an omitted variant is never sampled.
-- Dependencies: none.
-- Risk/change class: `[verification]` `[patch]`.
-- Effort: S.
-- Status: todo.
-- milestone: M-contract-verification.
-
-## IRIS-008 — Exercise the render seam with a real view-to-frame backend
-
-- Outcome: the `RenderBackend` seam is demonstrated end to end by a backend
-  that renders an Iris view through an Iris color law into borrowed frame
-  storage, establishing that the declared contract composes with the crate's
-  own view and color types.
-- Scope: one in-repo backend, as a test or an example, implementing
-  `RenderBackend<ScalarFieldView<'_, f32, 2>>` that maps values through a
-  `LookupTable` into a reused RGBA byte buffer; value-semantic assertions on
-  the resulting frame; a second `render` call establishing storage reuse.
-- Non-goals: a GPU backend, an image encoder, a windowing layer, or any new
-  dependency.
-- Acceptance oracle: the frame bytes are asserted against values computed
-  independently from the color law for a known field, and two successive frames
-  are shown to occupy the same backing storage.
-- Evidence of the gap: the only implementor in the repository is
-  `tests/view_contracts.rs:84-95`, `impl RenderBackend<[u8]> for
-  ByteFrameBackend`, which copies four bytes and touches neither a view type
-  nor a color map; `src/render/backend.rs:7` leaves `V` entirely unbounded, so
-  nothing ties the seam to `ScalarField`.
-- Dependencies: none.
-- Risk/change class: `[verification]` `[patch]`.
-- Effort: M.
-- Status: done; priority: P1; integrator: root; last-update: 2026-09-12; delivery: this commit.
-- Evidence: `tests/view_contracts.rs` now renders a `ScalarFieldView` through
-  `LookupTable<Grayscale, 5>` into borrowed RGBA storage, asserts independent
-  bytes for two fields, and proves the backing pointer is reused. The focused
-  locked Nextest, warning-denied Clippy, format, no-default-features check,
-  doctests, and Rustdoc gates pass.
-
-## IRIS-009 — Restore or retire the ADR index generator
-
-- Outcome: the generator provenance stated in `docs/adr/README.md` is true —
-  either the generator exists and CI runs regenerate-and-diff, or the header
-  stops naming a file that is not in the repository.
-- Scope: the `docs/adr/README.md` header and, if the generator is restored, a
-  committed generator plus a CI freshness check.
-- Non-goals: ADR decision changes; the implementation language is settled by
-  the repository's existing scripting convention at implementation time.
-- Acceptance oracle: an index check command runs in CI and fails on a
-  hand-edited index; or the "Generated by … do not hand-edit" header is gone
-  and the index is declared hand-maintained.
-- Evidence of the gap: `docs/adr/README.md:3-5` instructs
-  `python scripts/adr-index.py generate`, but the repository has no `scripts/`
-  directory at `9672fc0` (`ls -d scripts` finds no such path).
-- Dependencies: none.
-- Risk/change class: `[docs]` `[patch]`.
-- Effort: S.
-- Status: done 2026-09-02 (PR #22). The generator exists: atlas's `scripts/adr-index.py`, run through the reusable `adr-index-guard.yml` as the `adr-index` job in `ci.yml` (strict form); the check fails on a hand-edited index, and `docs/adr/README.md` is byte-identical to its output. The header still names `scripts/adr-index.py` — the atlas generator's own emitted text, changing stack-wide under atlas `ATLAS-ADR-FORM-NORMALIZATION-2026-09-02`.
-
-## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
-
-- Outcome: the byte-to-unit-interval conversion is expressed through the std
-  conversion lattice, and no public identifier carries a scalar-type suffix.
-- Scope: `src/color/normalized.rs`, its doctest at `normalized.rs:47-54`, the
-  book snippet in `docs/book/colormaps.md`, and the in-repo call sites at
-  `tests/color_laws.rs:24-33` and `tests/color_laws.rs:99`.
-- Non-goals: changing the numeric definition `n = value / 255`, which is exact
-  and tested; adding a `TryFrom`, since the conversion is infallible.
-- Acceptance oracle: `impl From<u8> for Normalized` exists, `from_u8` is gone
-  rather than deprecated or re-exported, every in-repo call site is converted
-  in the same change, and the exhaustive grid test at
-  `tests/color_laws.rs:22-36` still passes bit for bit.
-- Evidence of the gap: `src/color/normalized.rs:56` declares
-  `pub fn from_u8(value: u8) -> Self`, the only type-suffixed identifier under
-  `src/`, while `grep 'impl.*From<' src` returns no matches — a bespoke
-  constructor where the std lattice applies.
-- Dependencies: IRIS-006 (its verdict decides whether a control point is wrong);
-  this removes a public item; sequence it before the first `iris-viz` publish
-  (IRIS-003) or accept the major bump.
-- Risk/change class: `[arch]` `[major]` (public item removal).
-- Effort: S.
-- Status: todo.
-- milestone: M-contract-verification.
-
-## IRIS-012 — Retire the duplicate ADR index `docs/adr/INDEX.md`
-
-- Outcome: exactly one ADR index exists.
-- Scope: delete `docs/adr/INDEX.md`, folding any content it carries that
-  `docs/adr/README.md` lacks into the ADR bodies; update any reference to it.
-- Non-goals: ADR decision changes.
-- Acceptance oracle: `docs/adr/` contains one index file, and no repository
-  file references `INDEX.md`.
-- Evidence of the gap: `docs/adr/README.md` and `docs/adr/INDEX.md` both
-  tabulate ADR 0001 and 0002 with status, in different wording. IRIS-005
-  explicitly declared `INDEX.md` a non-goal (`backlog.md:62-63`), which left two
-  parallel indexes as the settled state rather than resolving the duplication.
-- Dependencies: sequence with IRIS-009 so the index output set is decided once.
-- Risk/change class: `[pm-hygiene]` `[patch]`.
-- Effort: S.
-- Status: done 2026-09-02 (PR #22). `docs/adr/INDEX.md` deleted; its per-ADR decision one-liners restate each ADR body's Decision section, so nothing folds. No repository file references it.
-
-## IRIS-013 — Make CI actually exercise the declared MSRV floor
-
-- Outcome: the `rust-version = "1.95"` claim is verified by a build that
-  demonstrably runs on 1.95.
-- Scope: `.github/workflows/ci.yml` and `rust-toolchain.toml`.
-- Non-goals: lowering or raising the MSRV.
-- Acceptance oracle: the MSRV job prints a `rustc --version` showing 1.95 and
-  builds the crate; a dependency raising its MSRV above the floor fails that
-  job.
-- Evidence of the gap: `.github/workflows/ci.yml:25` and `:45` request
-  `toolchain: 1.95.0`, but `rust-toolchain.toml:2` pins `channel = "1.97.0"`,
-  and a committed `rust-toolchain.toml` is a rustup directory override that
-  takes precedence over an installed default toolchain. The workflow therefore
-  very likely compiles with 1.97.0, leaving the `Cargo.toml:12` floor
-  unexercised. Confirm by reading `rustc --version` in a hosted run before
-  choosing the fix — an explicit `cargo +1.95.0`, or suppressing the override
-  for that job.
-- Dependencies: none.
-- Risk/change class: `[verification]` `[patch]`.
-- Effort: S.
-- Status: done 2026-09-02 (PR #23). `ci.yml` gains an `msrv` job with `RUSTUP_TOOLCHAIN: 1.95.0` — the variable outranks the committed pin, which the confirmed rustup precedence (`dtolnay/rust-toolchain` only installs and sets a default) had let override every earlier `toolchain: 1.95.0` request — a `rustc --version` proof step, and `cargo check --locked --workspace --all-features --all-targets`. `verify` and `supply-chain` now state the 1.97.0 they always ran. A red `msrv` job is a real floor violation: fix the crate or raise `rust-version`, never drop the override. Stack class: atlas `ATLAS-MSRV-JOBS-OVERRIDDEN-2026-09-02`.
-
-## IRIS-015 — Measure the lookup-table fast path
-
-- Outcome: the performance premise behind `LookupTable` — that a cached
-  nearest-entry lookup beats direct map evaluation by enough to justify the
-  type — is measured rather than assumed.
-- Scope: one criterion benchmark comparing `LookupTable::<M, N>::sample` with
-  `M::sample` across an analytic law (`Grayscale`, `BlueRed`), a table-defined
-  law (`Viridis`, `Turbo`), and the runtime-dispatched `NamedColorMap`, at two
-  or three resolutions; a committed per-binary wall-clock budget.
-- Non-goals: optimizing any map before a profile identifies its bound; a
-  benchmark whose single-iteration smoke run cannot fit the 30 s budget in
-  `.config/nextest.toml:2`.
-- Acceptance oracle: the benchmark smoke-runs inside the test budget in CI, and
-  the committed baseline records median and confidence interval per case with
-  the machine class in the header.
-- Evidence of the gap: the repository has no `benches/` directory at `9672fc0`;
-  `src/color/lookup_table.rs` exists purely as a precomputation cache, and the
-  README asserts allocation-free, dispatch-free operation with no timing
-  evidence behind it.
-- Dependencies: none; the measurement follows the IRIS-006 verdict so the benchmark
-  covers the law that ships.
-- Risk/change class: `[perf]` `[patch]`.
-- Effort: S.
-- Status: todo.
-- milestone: M-contract-verification.
