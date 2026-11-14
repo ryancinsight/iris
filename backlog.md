@@ -277,28 +277,6 @@
 - Effort: S.
 - Status: done 2026-09-02 (PR #23). `ci.yml` gains an `msrv` job with `RUSTUP_TOOLCHAIN: 1.95.0` — the variable outranks the committed pin, which the confirmed rustup precedence (`dtolnay/rust-toolchain` only installs and sets a default) had let override every earlier `toolchain: 1.95.0` request — a `rustc --version` proof step, and `cargo check --locked --workspace --all-features --all-targets`. `verify` and `supply-chain` now state the 1.97.0 they always ran. A red `msrv` job is a real floor violation: fix the crate or raise `rust-version`, never drop the override. Stack class: atlas `ATLAS-MSRV-JOBS-OVERRIDDEN-2026-09-02`.
 
-## IRIS-014 — Ground the book's consumer table in evidence
-
-- Outcome: the consumer table in `docs/book/stack_position.md` lists only
-  consumers whose Iris dependency is verifiable, each with its evidence.
-- Scope: the consumer table in `docs/book/stack_position.md`.
-- Non-goals: changing any consumer repository; adding consumers.
-- Acceptance oracle: every row names a consumer whose manifest depends on
-  `iris-viz`, checked against that repository at a named revision; unverified
-  rows are removed or marked prospective.
-- Evidence of the gap: the table lists `helios`, `kwavers`, `ritk`, and
-  `CFDrs`. This repository carries merge evidence for `ritk`
-  (`backlog.md:33-36`), `CFDrs` (`backlog.md:83-87`), and `kwavers`
-  (IRIS-004, `backlog.md:43-55`), but none for `helios`. Verification requires
-  reading the consumer repositories, which was outside the scope of the
-  2026-08-20 single-repository audit.
-- Dependencies: read access to the consumer repositories; documentation follows the
-  IRIS-006 verdict.
-- Risk/change class: `[docs]` `[patch]`.
-- Effort: S.
-- Status: todo.
-- milestone: M-contract-verification.
-
 ## IRIS-015 — Measure the lookup-table fast path
 
 - Outcome: the performance premise behind `LookupTable` — that a cached
