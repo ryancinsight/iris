@@ -117,10 +117,7 @@ IRIS-009 and IRIS-012 closed in PR #22: the ADR index check runs in CI through a
 reusable `adr-index-guard.yml` (the generator the README header names lives in
 atlas), and the parallel `docs/adr/INDEX.md` is deleted, leaving one index. IRIS-013 closed in PR #23: the `msrv` job pins its toolchain through `RUSTUP_TOOLCHAIN`
 (the only selection a committed `rust-toolchain.toml` does not outrank) and prints
-`rustc --version`, so the `Cargo.toml` floor is exercised on every run. `src/error.rs:75-76` gates the error trait on
-the `std` feature although the crate advertises `no_std` support at
-`src/lib.rs:7-8` and `core::error::Error` is long stable below the declared
-floor (IRIS-010). `src/color/normalized.rs:56` is the crate's only
+`rustc --version`, so the `Cargo.toml` floor is exercised on every run. `src/color/normalized.rs:56` is the crate's only
 type-suffixed public identifier and the place where the std conversion lattice
 should apply; `grep 'impl.*From<' src` returns nothing (IRIS-011). There are no
 benchmarks behind the `LookupTable` precomputation premise (IRIS-015).

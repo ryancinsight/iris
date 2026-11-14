@@ -72,8 +72,7 @@ impl fmt::Display for IrisError {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for IrisError {}
+impl core::error::Error for IrisError {}
 
 /// Result type for Iris contract validation.
 pub type IrisResult<T> = Result<T, IrisError>;
