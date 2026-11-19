@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scientific plot</title>
+<style>
+:root { color-scheme: light; font: 15px system-ui, sans-serif; color: #1c293c; background: #f3f5f8; }
+main { max-width: 1120px; margin: 0 auto; padding: 20px; }
+h1 { margin: 0 0 16px; font-size: 1.35rem; }
+figure { margin: 0; background: white; border: 1px solid #c6ceda; border-radius: 8px; overflow: hidden; }
+canvas { display: block; width: 100%; height: clamp(340px, 65vh, 720px); touch-action: none; }
+#legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 12px 0; }
+#legend[hidden] { display: none; }
+#legend input { margin-inline: 0 5px; }
+figcaption { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-top: 1px solid #dbe0e7; }
+output { min-height: 1.4em; }
+button { font: inherit; padding: 4px 10px; }
+</style>
+<main>
+  <h1 id="title"></h1>
+  <figure aria-labelledby="title">
+    <div id="legend" role="group" aria-label="Visible series" hidden></div>
+    <canvas id="plot" tabindex="0" aria-label="Interactive scientific plot"></canvas>
+    <figcaption><button type="button" id="reset">Reset view</button><output id="status"></output></figcaption>
+  </figure>
+</main>
+<script type="application/json" id="data">

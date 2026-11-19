@@ -65,13 +65,13 @@ jobs:
         run: python3 tools/generate_palette_reference.py --verify-fixtures
       - name: Test reference generator import binding
         run: python3 -m unittest discover -s tools/tests -v
-      - run: cargo fmt --check
-      - run: cargo check --all-features
-      - run: cargo check --no-default-features
-      - run: cargo clippy --all-targets --all-features -- -D warnings
-      - run: cargo nextest run --all-features
-      - run: cargo test --doc --all-features
-      - run: cargo doc --no-deps --all-features
+      - run: cargo fmt --all --check
+      - run: cargo check --workspace --all-features
+      - run: cargo check --workspace --no-default-features
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo nextest run --workspace --all-features
+      - run: cargo test --workspace --doc --all-features
+      - run: cargo doc --workspace --no-deps --all-features
 
   msrv:
     name: Rust 1.95.0 floor check

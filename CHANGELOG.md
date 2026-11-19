@@ -29,6 +29,11 @@ All notable changes are documented in this file.
 
 ### Added
 
+- [minor] Add `iris-plot-html` 0.1.0, a standalone browser renderer for
+  interactive line series, heatmaps, and three-dimensional point clouds.
+  It borrows scientific data, reuses its output buffer, and applies Iris
+  color laws for heatmaps and scalar-valued markers.
+
 - The normalized sRGB-encoded RGB and linear-opacity alpha convention, direct
   `round(255v)` byte quantization, and the non-linear-light interpolation
   contract are now documented and tested.

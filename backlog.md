@@ -1,5 +1,17 @@
 # Backlog
 
+## IRIS-HTML-001 — Interactive standalone plots [minor] — in progress
+
+- Outcome: provide Kwavers with first-party HTML output for line series,
+  pressure heatmaps, and spatial point clouds.
+- Contract: reuse the Iris view, color, and render contracts. Save the data and
+  Canvas renderer in one file. Preserve axis labels, scalar values, and
+  interaction without a browser network dependency.
+- Local evidence: 48/48 workspace Nextest tests and warning-denied plot-crate
+  Clippy. Payload tests assert the samples, shape, palette bytes, and escaping.
+- Closure: exercise a saved file in a browser, verify the Kwavers entry points,
+  then confirm the provider revision resolves in a fresh downstream checkout.
+
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry

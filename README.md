@@ -64,6 +64,25 @@ The built-in blue-to-red law is the exact linear map
 polarity without a neutral midpoint; `CoolWarm` remains the three-pole
 blue-white-red alternative.
 
+## Standalone browser plots
+
+The companion package `iris-plot-html` renders borrowed Iris series and scalar
+fields to interactive HTML through the lending `RenderBackend` contract. It
+supports line series, rectilinear heatmaps, and rotatable three-dimensional
+point clouds. A saved file includes its Canvas renderer and data, so it opens
+offline. The browser provides hover values, zoom, reset, and series selection.
+
+```rust
+use iris::{render::RenderBackend, view::SeriesView};
+use iris_plot_html::{HtmlPlotBackend, Plot};
+
+let series = [SeriesView::new("Pressure", &[0.0, 0.5], &[1.0, 2.0])?];
+let plot = Plot::lines("Signal", ["Time (s)", "Pressure (Pa)"], &series);
+let mut backend = HtmlPlotBackend::default();
+std::fs::write("signal.html", backend.render(&plot)?)?;
+# Ok::<(), Box<dyn std::error::Error>>(())
+```
+
 ## Verification
 
 The color invariant follows by induction over each piecewise interval: control

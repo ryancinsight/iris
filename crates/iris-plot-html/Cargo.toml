@@ -1,0 +1,21 @@
+[package]
+name = "iris-plot-html"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+description = "Interactive standalone HTML plots rendered from Iris views"
+repository = "https://github.com/ryancinsight/iris"
+license = "MIT OR Apache-2.0"
+publish = true
+
+[dependencies]
+iris-viz = { path = "../..", version = "0.1.4" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dev-dependencies]
+tracing = { version = "0.1.44", default-features = false, features = ["std"] }
+tracing-subscriber = { version = "0.3.23", default-features = false, features = ["fmt"] }
+
+[lints]
+workspace = true

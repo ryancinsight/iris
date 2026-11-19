@@ -1,3 +1,7 @@
+[workspace]
+members = ["crates/iris-plot-html"]
+resolver = "3"
+
 [package]
 # Registry name only. crates.io reserves `iris`, so the package is published as
 # `iris-viz` while `[lib] name` keeps the import path `iris` — the same split
@@ -34,11 +38,14 @@ serde = { version = "1.0", default-features = false, features = ["derive"], opti
 [dev-dependencies]
 serde_json = "1.0"
 
-[lints.rust]
+[lints]
+workspace = true
+
+[workspace.lints.rust]
 missing_docs = "deny"
 unsafe_code = "forbid"
 
-[lints.clippy]
+[workspace.lints.clippy]
 pedantic = { level = "deny", priority = -1 }
 
 # Pedantic floor: this crate is pedantic-clean. The census that established
