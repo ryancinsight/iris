@@ -9,8 +9,11 @@
   interaction without a browser network dependency.
 - Local evidence: 48/48 workspace Nextest tests and warning-denied plot-crate
   Clippy. Payload tests assert the samples, shape, palette bytes, and escaping.
-- Closure: exercise a saved file in a browser, verify the Kwavers entry points,
-  then confirm the provider revision resolves in a fresh downstream checkout.
+- Browser evidence at f4f6c951: Chrome 157 renders all three plot types and
+  passes real-input drag, zoom, and reset. The line-series selector affects
+  rendered pixels. Kwavers verifies all six export entry points.
+- Closure: make the provider source available to fresh downstream consumers
+  and verify their locked resolution.
 
 ## IRIS-003 — Crates.io release automation
 
