@@ -1,5 +1,15 @@
 # Backlog
 
+<a id="iris-stable-qualification"></a>
+## IRIS-STABLE-QUALIFICATION — iris stable-release qualification [patch] — todo
+- priority: verification; milestone: M-contract-verification; basis: `a5812da9b70d`.
+- Outcome: Qualify the field-view and color-map contracts used by renderers. Follow the [release scope](docs/adr/0003-release-scope-1-0.md) and [milestone exits](backlog/milestones.md).
+- Representative manifest `iris-viz 0.1.4`. Target 1.0.0.
+- [ ] [patch] Replay the zero-cardinality ScalarFieldView regression and its nonempty controls. Check the output length and the rejection of inconsistent shapes.
+- [ ] [patch] Verify the named map reference values, then measure direct evaluation against LookupTable at the resolutions in IRIS-015. Attach the reference colors and benchmark intervals.
+- [ ] [major] Reconcile the consumer table with actual renderer calls and verify a clean iris-viz consumer. Close the documentation and registry gates under ADR 0003.
+- [ ] [patch] Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
+
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
