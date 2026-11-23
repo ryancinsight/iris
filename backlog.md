@@ -2,13 +2,15 @@
 
 <a id="iris-stable-qualification"></a>
 ## IRIS-STABLE-QUALIFICATION — iris stable-release qualification [patch] — todo
-- priority: verification; milestone: M-contract-verification; basis: `a5812da9b70d`.
-- Outcome: Qualify the field-view and color-map contracts used by renderers. Follow the [release scope](docs/adr/0003-release-scope-1-0.md) and [milestone exits](backlog/milestones.md).
+- priority: verification; milestone: M-contract-verification; basis: `a902e959ed89`.
+- Outcome: Qualify the field-view and color-map contracts used by renderers. Follow the [release scope](docs/adr/0003-release-scope-1-0.md) and [milestone exits](backlog/milestones.md). Planning targets for `iris-viz` are 0.1.5, then 0.2.0, then 1.0.0. Verification alone can advance the current version.
 - Representative manifest `iris-viz 0.1.4`. Target 1.0.0.
 - [ ] [patch] Replay the zero-cardinality ScalarFieldView regression and its nonempty controls. Check the output length and the rejection of inconsistent shapes.
 - [ ] [patch] Verify the named map reference values, then measure direct evaluation against LookupTable at the resolutions in IRIS-015. Attach the reference colors and benchmark intervals.
 - [ ] [major] Reconcile the consumer table with actual renderer calls and verify a clean iris-viz consumer. Close the documentation and registry gates under ADR 0003.
-- [ ] [patch] Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
+- [ ] [patch] **0.1.5.** Permute zero and nonzero extents in a field view. Check empty cardinality where any extent is zero, and check that a nonempty shape rejects a mismatched buffer. [Source and baseline](gap_audit.md#incremental-release-baseline).
+- [ ] [minor] **0.2.0.** Pass the field through a real renderer. Compare palette endpoints and quantization transitions to the public color contract and verify the returned extent and buffer length.
+- [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. An external visualization caller reproduces the field-view and palette results with the supported feature set. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
 
 ## IRIS-003 — Crates.io release automation
 
