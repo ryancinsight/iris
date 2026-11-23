@@ -1,5 +1,13 @@
 # Iris gap audit
 
+## Incremental release baseline
+
+Reviewed [iris-viz 0.1.4](Cargo.toml) at [a902e959ed89](https://github.com/ryancinsight/iris/tree/a902e959ed893baf899a96c5e973f1bfecc40df9). The exact version appears in the [registry](https://crates.io/crates/iris-viz/0.1.4).
+
+The next [patch] checkpoint uses [zero cardinality permutations](tests/zero_cardinality_permutations.rs). [Target version and acceptance criteria](backlog.md#iris-stable-qualification).
+
+The Atlas board check reports 11 existing schema findings, including `IRIS-003`. Verify each item against its delivery evidence, archive completed work and rerun the board check before the freeze.
+
 ## Finding 2026-08-20: iris scope-vs-delivery audit
 
 Static audit of `9672fc0876306fbb76d58fb3af37e8cbd5998b42` on `main`. No build,
