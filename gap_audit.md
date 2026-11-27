@@ -46,18 +46,6 @@ serving the `Rainbow` law only. The convention is pinned by an exhaustive
 contract is stated consistently in six places and verified; no colorspace
 capability is claimed and none is delivered.
 
-### The render seam is declared but never exercised against its own view types
-
-`RenderBackend` (`src/render/backend.rs:7-21`) is dyn-free by construction: the
-GAT `Frame<'a>` makes the trait dyn-incompatible, so the README's
-"core uses no dynamic dispatch" holds structurally and is corroborated by the
-zero `dyn ` sites measured above. But `V` is left entirely unbounded, nothing
-ties the seam to `ScalarField`, and the sole implementor in the repository is
-`impl RenderBackend<[u8]> for ByteFrameBackend` at
-`tests/view_contracts.rs:84-95` — a four-byte `copy_from_slice` that touches no
-view type and no color map. The declared composition "view → color law → lent
-frame storage" is therefore unverified end to end. Filed as IRIS-008.
-
 ### LUT output has value-semantic verification, but only at sample nodes
 
 `tests/color_laws.rs:181-187` differentially checks
@@ -92,30 +80,6 @@ wrong, since those maps are piecewise control-point tables evaluated by
 nearest entry without interpolating; and that "`RenderBackend` is generic over
 any `ColorMap`", which `src/render/backend.rs:7` contradicts.
 
-### Process and provenance defects
-
-IRIS-009 and IRIS-012 closed in PR #22: the ADR index check runs in CI through atlas's
-reusable `adr-index-guard.yml` (the generator the README header names lives in
-atlas), and the parallel `docs/adr/INDEX.md` is deleted, leaving one index. IRIS-013 closed in PR #23: the `msrv` job pins its toolchain through `RUSTUP_TOOLCHAIN`
-(the only selection a committed `rust-toolchain.toml` does not outrank) and prints
-`rustc --version`, so the `Cargo.toml` floor is exercised on every run. `src/color/normalized.rs:56` is the crate's only
-type-suffixed public identifier and the place where the std conversion lattice
-should apply; `grep 'impl.*From<' src` returns nothing (IRIS-011). There are no
-benchmarks behind the `LookupTable` precomputation premise (IRIS-015).
-
-### Completeness
-
-Roughly 82 % of the declared scope is delivered and verified. Denominator: the
-five capabilities in the README "Boundary" section, the decisions of ADR 0001
-and ADR 0002, and the four chapters in `docs/book/SUMMARY.md`, weighted 40 %
-capability implementation, 25 % verification depth, 20 % documentation, 15 %
-conformance floor. Capability implementation is near complete — every declared
-capability exists as real, input-sensitive code with no stub. Verification
-carries the loss: palette agreement has a self-referential oracle, the render
-seam has no real exercise, `ALL` has no exhaustiveness proof, and the MSRV
-floor is probably unexercised. Documentation loses the two corrected false
-claims and the phantom generator. The floor loses almost nothing.
-
 ### Working-tree observation, not acted on
 
 At audit time the tree carried a staged-only `Cargo.lock` change adding 228
@@ -143,20 +107,6 @@ use that split consistently.
 The audited pre-change provider default was
 `bc47ce37376127b65c064b93dac256555f44ff65`. Hosted provider CI passes at that
 exact revision in run `31865323610`.
-
-### External release blocker
-
-The crates.io trusted-publishing configuration for `ryancinsight/iris` is not
-present. Hosted release run `31462641512`, targeting the earlier release
-revision `ab3eea284e41a9649941253a7b7a69c839907fb3`, passed package validation
-but failed while requesting the short-lived OIDC token with HTTP 400:
-`No Trusted Publishing config found for repository ryancinsight/iris`.
-
-This is external registry configuration and remains open. The documentation
-and PM synchronization does not configure the publisher, enforce
-trusted-publishing-only mode, publish `iris-viz`, or verify the crates.io
-index. Re-open this item after the exact trusted publisher is configured and a
-new `crate-iris-viz-v<version>` release completes validation and publication.
 
 ## Local Atlas-overlay limitation
 
