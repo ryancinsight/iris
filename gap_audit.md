@@ -67,11 +67,10 @@ table storage. Both are genuine value-semantic assertions. What is absent is
 off-node coverage: `LookupTable::sample`
 (`src/color/lookup_table.rs:59-64`) is a nearest-bin quantizer, so its
 between-node error against the direct map is bounded by table resolution and
-map slope — a derivable bound with no test behind it, and a second reason
-IRIS-006's bound work is the right next increment. There is no golden-image
+map slope — a derivable bound with no test behind it. There is no golden-image
 verification in the repository; for a crate that emits color rather than
-images, the per-channel reference comparison of IRIS-006 is the stronger oracle
-and is filed in preference to a golden image.
+images, the per-channel reference comparison in `tests/palette_reference.rs` is
+the stronger oracle.
 
 ### Claim cross-check against README and the Accepted ADRs
 

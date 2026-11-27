@@ -30,7 +30,7 @@
 - Scope: the "Where Iris Sits" paragraph (`docs/book/stack_position.md:29-30`).
 - Gap: it says consumers "supply the `RenderBackend` implementation". At default heads only metis `bbf6ffc97bad` implements it (`crates/metis-ui-lang/src/layout/display/render.rs:6`, `impl iris::render::RenderBackend<DisplayList> for Framebuffer`). `metis-frontend` and kwavers `eb91da65678b` (`kwavers-analysis/src/plotting/output.rs:2`) import it to call a backend (`iris_plot_html::HtmlPlotBackend`, a registry crate outside the member list).
 - Gap: `git grep RenderBackend` matches nothing in `CFDrs` `b76f00a72132`, `ritk` `99be8f8c2ba9` or helios `ea487343c0ad`.
-- Oracle: for every repository the sentence names as an implementor, `git grep -n "impl.*RenderBackend"` matches at its default-branch commit, and no repository is named otherwise. Fails at the basis for `CFDrs` and `ritk`.
+- Oracle: the sentence names metis as the implementor, and `git grep -n "impl.*RenderBackend"` matches at the default-branch commit of every repository it names; a sentence that names none, or names `CFDrs` or `ritk`, fails. Fails at the basis: it names none.
 - Non-goals: the consumer table (IRIS-017).
 - Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
 
@@ -71,11 +71,28 @@
 - Scope: kwavers `crates/kwavers-analysis/src/visualization/renderer/volume.rs` and its `ColorScheme` match; `NamedColorMap` already provides Grayscale, Plasma, Viridis, Inferno, Magma and Turbo.
 - Non-goals: Kwavers GPU mechanics, domain interpretation, plot-series extraction.
 - Oracle: `kwavers-analysis` builds its transfer-function tables from Iris `LookupTable`, and `git grep -n "fn [a-z]*_colormap" -- crates/kwavers-analysis/src` matches nothing at kwavers' default-branch commit. Fails at the basis.
-- Gap: the earlier `done` status did not hold. At kwavers `eb91da65678b`, `volume.rs:151-241` defines six local `*_colormap()` tables (match at :131-137), `visualization/` imports nothing from `iris`, and `git log -S inferno_colormap` shows only the crate-extraction commit. Iris is used only under `plotting/`.
+- Gap: the earlier `done` status did not hold. At kwavers `eb91da65678b`, `volume.rs:151-241` defines six local `*_colormap()` tables (match at :131-137), `visualization/` imports nothing from `iris`, and `git log -S inferno_colormap -- crates/kwavers-analysis/src` lists only the crate-extraction commit `a101ef2fdd`. Iris is used only under `plotting/`.
 - Next: a kwavers member item; no kwavers board file names this work.
 - Class: `[arch]` `[minor]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
 
-<a id="IRIS-003"></a>
+<a id="IRIS-002"></a>
+## IRIS-002 — Remove CFDrs's local heatmap color law
+- Status: todo; priority: tightening; milestone: M-contract-verification; needs: none.
+- Outcome: CFDrs heatmap fills take their color from an Iris `ColorMap`, so no consumer carries a local color formula.
+- Scope: CFDrs `crates/cfd-schematics/src/heatmap/{palette.rs,svg.rs,tests.rs}`; an additive Iris map if no `NamedColorMap` reproduces the law.
+- Gap: at CFDrs `b76f00a72132`, `palette.rs:1-7` defines `cancer_cav_color` (linear #FFD700 to #CC0000), called at `svg.rs:158`; `analysis_field/color.rs:3` already uses `NamedColorMap`. Searching non-example, non-test sources for `* 255` and `as u8` finds only `palette.rs:4-5`.
+- Oracle: `git grep -n cancer_cav_color -- crates` matches nothing at CFDrs' default-branch commit. Fails at the basis (7 matches).
+- Class: `[arch]` `[minor]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
+
+<a id="IRIS-020"></a>
+## IRIS-020 — Re-point ladder and ADR 0003 ids that resolve to nothing
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: every `IRIS-nnn` in `backlog/milestones.md` and ADR 0003 names a board heading or a commit with its `Item:` trailer.
+- Scope: `backlog/milestones.md:5`, `docs/adr/0003-release-scope-1-0.md:11-12`; moving an exit check needs an ADR 0003 revision note and a judge verdict.
+- Gap: IRIS-006 is delivered and has no board heading; `git log --all --grep='^Item: IRIS-006'` lists none (IRIS-010, 014 and 016 have 2, 1 and 5).
+- Oracle: for each id in those files, a heading `<a id="IRIS-nnn">` exists at the default-branch commit or `git log --all --grep="^Item: IRIS-nnn"` is nonempty. Fails for IRIS-006.
+- Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
+
 ## IRIS-003 — Crates.io release automation
 
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
@@ -88,7 +105,7 @@
   merged `iris-viz` package is indexed on crates.io; the exact GitHub workflow is
   the crate's trusted publisher and trusted-publishing-only mode is enabled.
 - Risk/class: `[patch]` release infrastructure.
-- Status: todo.
+- Status: in progress.
 - milestone: M-1.0.
 - Current state (2026-08-15, audited pre-change `origin/main` `bc47ce3`): the
   package identity is synchronized as registry package `iris-viz` with Rust
@@ -106,8 +123,15 @@
   Release. The trusted-publisher configuration is an external repository
   setting that no repository change can supply.
 
-
-## Ready after IRIS-001
-
-- Extract repeated CFDrs/Kwavers plot-series assembly onto Iris borrowed views after consumer contract audit.
-
+<a id="IRIS-007"></a>
+## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: adding a `NamedColorMap` variant without adding it to `ALL` fails to
+  compile or fails a test, so the exhaustive-grid law test cannot silently skip
+  a map.
+- Scope: `src/color/map/named.rs` (the `named_color_maps!` macro and `all_contains_each_variant_once`).
+- Non-goals: changing the stable display order of `ALL` or the
+  `#[non_exhaustive]` attribute.
+- Gap (read, not run): `ALL` is `[Self; 14]` built from `display_order` (:39-41); the test sizes `seen` by `ALL.len()` and iterates only `ALL` (:116-130), so a variant missing from `ALL` is never seen.
+- Oracle: append a variant after `BlueRed` (discriminant 14) and leave `display_order` unchanged; `cargo nextest run --locked --all-features` fails. It passes today.
+- Class: `[verification]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
