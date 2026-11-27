@@ -13,6 +13,10 @@ fn series_view_borrows_inputs_and_pairs_values() {
     let samples = [2.0_f64, 3.0, 5.0];
     let series = SeriesView::new("pressure", &coordinates, &samples).expect("cardinalities match");
 
+    let (x, y) = series.sample_at(1).expect("middle sample");
+    assert!(core::ptr::eq(x, &raw const coordinates[1]));
+    assert!(core::ptr::eq(y, &raw const samples[1]));
+    assert!(series.sample_at(usize::MAX).is_none());
     assert!(core::ptr::eq(series.coordinates(), &coordinates));
     assert!(core::ptr::eq(series.samples(), &samples));
     assert_eq!(
