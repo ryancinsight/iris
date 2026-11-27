@@ -6,8 +6,6 @@ Reviewed [iris-viz 0.1.4](Cargo.toml) at [a902e959ed89](https://github.com/ryanc
 
 The next [patch] checkpoint uses [zero cardinality permutations](tests/zero_cardinality_permutations.rs). [Target version and acceptance criteria](backlog.md#iris-stable-qualification).
 
-The Atlas board check reports 11 existing schema findings, including `IRIS-003`. Verify each item against its delivery evidence, archive completed work and rerun the board check before the freeze.
-
 ## Finding 2026-08-20: iris scope-vs-delivery audit
 
 Static audit of `9672fc0876306fbb76d58fb3af37e8cbd5998b42` on `main`. No build,
@@ -48,25 +46,6 @@ serving the `Rainbow` law only. The convention is pinned by an exhaustive
 contract is stated consistently in six places and verified; no colorspace
 capability is claimed and none is delivered.
 
-### IRIS-006 reference agreement is measured; final delivery is pending
-
-The seven documented palette approximations now have independent Matplotlib
-3.11.2 reference tables, source/fixture hashes and upstream notices. Actual Iris
-sampling on all 1,025 exact binary grid inputs is compared with the released
-256-entry LUT semantics. The measured RGB ceilings are stated in each map's
-Rustdoc and in `docs/book/palette-reference.md`, with their outward-rounding
-rule and finite-grid scope. Existing interpolation-node laws remain intact.
-
-The independent channel differences are substantial for several maps: the
-largest channel ceiling is 0.005341 for Bone and 0.498381 for Turbo. They quantify
-the current approximation, rather than establish a previously promised fidelity
-threshold. No palette control points or executable color-law logic change.
-No continuous-domain or perceptual guarantee follows from this finite sample.
-
-IRIS-006 is implemented as a verification patch; full final-head gates,
-independent review and conditional delivery remain required. The existing
-perceptual-uniformity disclaimer and all other audit items remain applicable.
-
 ### The render seam is declared but never exercised against its own view types
 
 `RenderBackend` (`src/render/backend.rs:7-21`) is dyn-free by construction: the
@@ -88,11 +67,10 @@ table storage. Both are genuine value-semantic assertions. What is absent is
 off-node coverage: `LookupTable::sample`
 (`src/color/lookup_table.rs:59-64`) is a nearest-bin quantizer, so its
 between-node error against the direct map is bounded by table resolution and
-map slope — a derivable bound with no test behind it, and a second reason
-IRIS-006's bound work is the right next increment. There is no golden-image
+map slope — a derivable bound with no test behind it. There is no golden-image
 verification in the repository; for a crate that emits color rather than
-images, the per-channel reference comparison of IRIS-006 is the stronger oracle
-and is filed in preference to a golden image.
+images, the per-channel reference comparison in `tests/palette_reference.rs` is
+the stronger oracle.
 
 ### Claim cross-check against README and the Accepted ADRs
 
