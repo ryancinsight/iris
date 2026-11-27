@@ -55,6 +55,12 @@ impl<'a, X, Y> SeriesView<'a, X, Y> {
         self.samples
     }
 
+    /// Borrow the coordinate and value at a cursor index in constant time.
+    #[must_use]
+    pub fn sample_at(&self, index: usize) -> Option<(&'a X, &'a Y)> {
+        self.coordinates.get(index).zip(self.samples.get(index))
+    }
+
     /// Iterate paired coordinate and sample references without allocation.
     #[must_use]
     pub fn iter(&self) -> impl ExactSizeIterator<Item = (&X, &Y)> {
