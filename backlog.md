@@ -12,17 +12,6 @@
 - [ ] [minor] **0.2.0.** Pass the field through a real renderer. Compare palette endpoints and quantization transitions to the public color contract and verify the returned extent and buffer length.
 - [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. An external visualization caller reproduces the field-view and palette results with the supported feature set. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
 
-<a id="IRIS-017"></a>
-## IRIS-017 — Correct the consumer table to match consumer manifests
-- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
-- Outcome: `## Consumers` and `### Prospective consumers` in `docs/book/stack_position.md` name every registered member whose manifests declare `iris-viz`, and the prose is true of each row.
-- Scope: `docs/book/stack_position.md:36-52` (also the third line of IRIS-STABLE-QUALIFICATION).
-- Gap, read at default heads: metis `bbf6ffc97bad` declares `iris` in `metis-frontend` and `metis-ui-lang` `[dependencies]` and in the root package `[dev-dependencies]`; it has no row. kwavers `eb91da65678b` declares it in `[workspace.dependencies]` and as an optional dependency of `kwavers-analysis` (feature `plotting`); lines 49-51 say it declares none.
-- Gap: "Each row names a package" is false for `CFDrs` `b76f00a72132` and `ritk` `99be8f8c2ba9` (virtual roots, only `[workspace.dependencies]`); `cfd-1d` and `cfd-2d` declare `iris` only under `[dev-dependencies]`.
-- Oracle: at each registered member's default-branch commit, the members whose `Cargo.toml` dependency tables (never comments: athena, gaia and tyche match only comments) declare `iris-viz` equal the rows; the wording says "repository" and marks dev-only and optional declarations. Fails at the basis.
-- Non-goals: the generator (IRIS-019); the `RenderBackend` sentence (IRIS-018).
-- Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
-
 <a id="IRIS-018"></a>
 ## IRIS-018 — Correct who supplies the `RenderBackend` implementation
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
@@ -31,15 +20,15 @@
 - Gap: it says consumers "supply the `RenderBackend` implementation". At default heads only metis `bbf6ffc97bad` implements it (`crates/metis-ui-lang/src/layout/display/render.rs:6`, `impl iris::render::RenderBackend<DisplayList> for Framebuffer`). `metis-frontend` and kwavers `eb91da65678b` (`kwavers-analysis/src/plotting/output.rs:2`) import it to call a backend (`iris_plot_html::HtmlPlotBackend`, a registry crate outside the member list).
 - Gap: `git grep RenderBackend` matches nothing in `CFDrs` `b76f00a72132`, `ritk` `99be8f8c2ba9` or helios `ea487343c0ad`.
 - Oracle: the sentence names metis as the implementor, and `git grep -n "impl.*RenderBackend"` matches at the default-branch commit of every repository it names; a sentence that names none, or names `CFDrs` or `ritk`, fails. Fails at the basis: it names none.
-- Non-goals: the consumer table (IRIS-017).
+- Non-goals: the consumer table.
 - Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
 
 <a id="IRIS-019"></a>
 ## IRIS-019 — Check the consumer table against consumer manifests
-- Status: todo; priority: verification; milestone: M-contract-verification; needs: IRIS-017.
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
 - Outcome: the consumer table cannot drift from the stack's manifests; a committed check regenerates its manifest and coverage columns and diffs them.
 - Scope: a stack-owned generator in atlas `scripts/` (reverse dependencies need every member's manifests), a marked generated region in `stack_position.md`, and its invocation in iris CI.
-- Gap: atlas `8a771bd3a658` has no such script in `scripts/` and no board item names one; the hand-edited table has drifted (IRIS-017).
+- Gap: atlas `8a771bd3a658` has no such script in `scripts/` and no board item names one; the hand-edited table drifted from the manifests before its last correction.
 - Oracle: (a) at each row's recorded revision the generated manifest column equals the table, failing on a hand edit; (b) a scheduled meta scan at current default commits fails when a registered member declaring `iris-viz` has no row, shown by a synthetic omitted row.
 - Non-goals: the "Iris items imported" prose column.
 - Next: the lead files the atlas meta item that owns the generator and links here.
