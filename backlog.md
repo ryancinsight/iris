@@ -93,35 +93,18 @@
 - Oracle: for each id in those files, a heading `<a id="IRIS-nnn">` exists at the default-branch commit or `git log --all --grep="^Item: IRIS-nnn"` is nonempty. Fails for IRIS-006.
 - Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
 
+<a id="IRIS-003"></a>
 ## IRIS-003 — Crates.io release automation
-
+- Status: blocked; priority: verification; milestone: M-1.0; needs: none.
 - Outcome: publish `iris-viz` from GitHub Releases without a long-lived registry
   token in repository secrets.
-- Scope: package metadata, exact release identity validation, package dry-run,
-  crates.io OIDC trusted publishing, and distribution documentation.
 - Non-goals: version changes, additional packages, or consumer dependency
   updates.
-- Acceptance: local package and repository gates pass; hosted CI passes; the
-  merged `iris-viz` package is indexed on crates.io; the exact GitHub workflow is
-  the crate's trusted publisher and trusted-publishing-only mode is enabled.
+- Blocker: trusted-publishing-only is a registry setting only the owner can enable. Re-open trigger: the owner reports it enabled, or the API in the oracle shows it.
+- Gap (crates.io API, read this session): 0.1.1 to 0.1.4 carry `trustpub_data` (github, `ryancinsight/iris`); 0.1.0 carries none; `trustpub_only` is `false`. Unverified: whether a publisher is registered now.
+- Oracle: `GET https://crates.io/api/v1/crates/iris-viz` returns `trustpub_only: true`. Fails at the basis.
 - Risk/class: `[patch]` release infrastructure.
-- Status: in progress.
-- milestone: M-1.0.
-- Current state (2026-08-15, audited pre-change `origin/main` `bc47ce3`): the
-  package identity is synchronized as registry package `iris-viz` with Rust
-  import path `iris`, and hosted provider CI passes in run `31865323610`. A
-  locked package dry run (`cargo package --locked`) and locked documentation
-  build remain blocked in the Atlas checkout because Cargo attempts to rewrite
-  `Cargo.lock` under the ambient path-patch graph. The hosted release run
-  `31462641512` reached the OIDC token step but failed with HTTP 400 because no
-  trusted publishing configuration exists for `ryancinsight/iris`; this is an
-  external release blocker, not fixed by the provider documentation update.
-- Next steps: pass the format, feature, lint, Nextest, doctest, documentation,
-  package and hosted CI gates; merge the release automation and publish
-  `iris-viz`; configure the exact trusted publisher, enforce
-  trusted-publishing-only, and verify the crates.io index and the GitHub
-  Release. The trusted-publisher configuration is an external repository
-  setting that no repository change can supply.
+- basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
 
 <a id="IRIS-007"></a>
 ## IRIS-007 — Prove `NamedColorMap::ALL` covers every variant
