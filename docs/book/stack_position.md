@@ -38,10 +38,11 @@ from any device or window implementation.
 Each row names a repository whose manifests declare a direct dependency on
 `iris-viz`. The revision is the repository's default-branch commit at which the
 manifests and the `iris` imports were read on 2026-11-27. A manifest name
-without a mark lists the package under `[dependencies]`. `(workspace)` marks a
-declaration only in `[workspace.dependencies]`, which member manifests inherit
-with `workspace = true`; `(dev)` marks `[dev-dependencies]` only; `(optional)`
-marks an optional dependency.
+without a mark lists the package under `[dependencies]`. A mark replaces that
+with the tables it names: `workspace` is `[workspace.dependencies]`, which
+member manifests inherit with `workspace = true`; `dev` is
+`[dev-dependencies]`; `optional` is an optional dependency. `(workspace, dev)`
+declares it in both tables.
 
 | Consumer | Manifests declaring `iris-viz` | Verified at | Iris items imported |
 |----------|--------------------------------|-------------|---------------------|
@@ -52,10 +53,8 @@ marks an optional dependency.
 
 ### Prospective consumers
 
-`helios` declares no `iris-viz` dependency at `ea487343c0ad`. `athena` at
-`9b6541316824`, `gaia` at `d05a93e3d849` and `tyche` at `04bb3b01609e` name the
-package only in a manifest comment. None is a consumer until one of its
-manifests names the package in a dependency table.
+`helios` declares no `iris-viz` dependency at `ea487343c0ad`, so it is not a
+consumer until one of its manifests names the package in a dependency table.
 
 ## Registry Name
 
