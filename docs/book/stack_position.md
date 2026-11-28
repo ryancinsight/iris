@@ -23,14 +23,14 @@ eunomia ──► aequitas ──► ... domain solvers and applications ...
                                │
                                ▼
                         domain solver or application
-                        (owns rendering backend + output format)
+                        (provides or selects rendering backend + output format)
 ```
 
 Domain solvers and applications depend on Iris for the visualization vocabulary
 and supply the array storage. Of the consumers below, only `metis` implements
-`RenderBackend` (`metis-ui-lang` for `DisplayList` on `Framebuffer`); `kwavers`
-and `metis-frontend` import the trait to call a backend. Iris itself has no
-dependency on any physics or solver package. The view-contract
+`RenderBackend`, for `DisplayList` on `Framebuffer` in `metis-ui-lang`.
+`kwavers` and `metis-frontend` import the trait to call a backend. Iris itself
+has no dependency on any physics or solver package. The view-contract
 suite demonstrates this seam with a scalar-field backend that maps through a
 `LookupTable` into reused RGBA storage; that conformance backend is separate
 from any device or window implementation.
