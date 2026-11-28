@@ -116,3 +116,9 @@ documentation build is blocked before compilation because the ambient Atlas
 path-patch graph causes Cargo to attempt a `Cargo.lock` rewrite under
 `--locked`. This is environment/stack resolution evidence, not a provider
 source failure.
+
+<a id="empty-claim-commits"></a>
+## Empty claim commits reach the default branch
+- Risk: a claim commit with no tree change merges unfolded, so default-branch history holds commits that change nothing; folding the claim into the first real commit has no check.
+- Evidence (read at `49bf9ab6e0c5`): three non-merge commits on `origin/main` have an empty diff, two of them `Item:` claims (`193b9d0200dc`, `becaa8ba8bb2`) and `6a5e4d45b72e`; found with `git rev-list --no-merges` plus an empty `git diff-tree --root --no-commit-id --name-only -r` (without `--root` the root commit also looks empty). The atlas `scripts/git-hooks/pre-commit` and `pre-push`, read at filing, have no empty-commit test (an `empty`/`diff-tree` search finds unrelated comments only).
+- Re-open trigger: an atlas pre-push or conformance check rejects a pushed non-merge commit with an empty diff; then delete this entry. atlas is the stack's meta repository: the check is a requirement for the atlas board, which iris cannot change.
