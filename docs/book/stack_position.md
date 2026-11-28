@@ -41,20 +41,15 @@ manifests and the `iris` imports were read on 2026-11-27. A manifest name
 without a mark lists the package under `[dependencies]`. A mark replaces that
 with the tables it names: `workspace` is `[workspace.dependencies]`, which
 member manifests inherit with `workspace = true`; `dev` is
-`[dev-dependencies]`; `optional` is an optional dependency. `(workspace, dev)`
-declares it in both tables.
+`[dev-dependencies]`; `optional` is a `[dependencies]` entry with
+`optional = true`. `(workspace, dev)` declares it in both tables.
 
 | Consumer | Manifests declaring `iris-viz` | Verified at | Iris items imported |
 |----------|--------------------------------|-------------|---------------------|
 | `CFDrs` | `Cargo.toml` (workspace), `crates/cfd-1d/Cargo.toml` (dev), `crates/cfd-2d/Cargo.toml` (dev), `crates/cfd-schematics/Cargo.toml` | `b76f00a72132` | `NamedColorMap`, `ColorMap`, `Normalized`, `Rgba` for schematic and analysis-field color; the `cfd-1d` and `cfd-2d` imports are in their examples |
 | `kwavers` | `Cargo.toml` (workspace), `crates/kwavers-analysis/Cargo.toml` (optional) | `34fa3f47ae07` | `NamedColorMap`, `Rgba`, `ScalarFieldView`, `SeriesView`, `RenderBackend` for the `plotting` feature of `kwavers-analysis` |
-| `metis` | `Cargo.toml` (workspace, dev), `crates/metis-frontend/Cargo.toml`, `crates/metis-ui-lang/Cargo.toml` | `bbf6ffc97bad` | `RenderBackend`; `metis-ui-lang` implements it for `DisplayList` on `Framebuffer` |
-| `ritk` | `Cargo.toml` (workspace), `crates/ritk-snap/Cargo.toml`, `crates/ritk-vtk/Cargo.toml` | `99be8f8c2ba9` | `ColorMap`, `NamedColorMap`, `LookupTable`, `Normalized` for slice, fusion, and volume-render color and VTK lookup tables |
-
-### Prospective consumers
-
-`helios` declares no `iris-viz` dependency at `ea487343c0ad`, so it is not a
-consumer until one of its manifests names the package in a dependency table.
+| `metis` | `Cargo.toml` (workspace, dev), `crates/metis-frontend/Cargo.toml`, `crates/metis-ui-lang/Cargo.toml` | `0f1cfc9bc916` | `RenderBackend`; `metis-ui-lang` implements it for `DisplayList` on `Framebuffer` |
+| `ritk` | `Cargo.toml` (workspace), `crates/ritk-snap/Cargo.toml`, `crates/ritk-vtk/Cargo.toml` | `fe35fe8630ab` | `ColorMap`, `NamedColorMap`, `LookupTable`, `Normalized` for slice, fusion, and volume-render color and VTK lookup tables |
 
 ## Registry Name
 
