@@ -43,11 +43,11 @@
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
 - Outcome: the consumer table cannot drift from the stack's manifests; a committed check regenerates its manifest and coverage columns and diffs them.
 - Scope: a stack-owned generator in atlas `scripts/` (reverse dependencies need every member's manifests), a marked generated region in `stack_position.md`, and its invocation in iris CI.
-- Gap: atlas `8a771bd3a658` has no such script in `scripts/` and no board item names one; the hand-edited table drifted from the manifests before its last correction.
-- Oracle: (a) at each row's recorded revision the generated manifest column equals the table, failing on a hand edit; (b) a scheduled meta scan at current default commits fails when a registered member declaring `iris-viz` has no row, shown by a synthetic omitted row.
+- Gap: atlas `a850dbc26a31` has no such script in `scripts/` and no board item names one; the hand-edited table drifted from the manifests before its last correction. Neither (a) nor (b) reads a row's revision against the member's tip: CFDrs `e522d8dd83f0` (an ancestor of the default tip `3dbc3bfc6898`) declares `iris` in `[workspace.dependencies]`, `[dependencies]` and a `[patch]` table of the root manifest, the tip in `[workspace.dependencies]` only (`tomllib` scan of both revisions).
+- Oracle: (a) at each row's recorded revision the generated manifest column equals the table, failing on a hand edit; (b) a scheduled meta scan at current default commits fails when a registered member declaring `iris-viz` has no row, shown by a synthetic omitted row; (c) each row's revision is its member's default tip or an ancestor of it (`git merge-base --is-ancestor`) and the manifest column generated at the tip equals the one at that revision, run in the scheduled meta scan of (b) so a member's later manifest change fails a stale row without waiting for an iris PR, shown by a synthetic CFDrs row regenerated at `e522d8dd83f0`, which passes (a) and fails (c) (derived: no generator exists to run). Wrong fix tried: checking only that the revision resolves (`git cat-file -e e522d8dd83f0`) accepts that row. Fails at the basis: no generator exists.
 - Non-goals: the "Iris items imported" prose column.
 - Next: the lead files the atlas meta item that owns the generator and links here.
-- Class: `[verification]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
+- Class: `[verification]` `[patch]`. basis: a99f4037015e3f403e36e9e4643fa47f1dd11db0.
 
 <a id="IRIS-011"></a>
 ## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
