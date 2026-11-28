@@ -28,11 +28,23 @@
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
 - Outcome: the consumer table cannot drift from the stack's manifests; a committed check regenerates its manifest and coverage columns and diffs them.
 - Scope: a stack-owned generator in atlas `scripts/` (reverse dependencies need every member's manifests), a marked generated region in `stack_position.md`, and its invocation in iris CI.
-- Gap: atlas `8a771bd3a658` has no such script in `scripts/` and no board item names one; the hand-edited table drifted from the manifests before its last correction.
-- Oracle: (a) at each row's recorded revision the generated manifest column equals the table, failing on a hand edit; (b) a scheduled meta scan at current default commits fails when a registered member declaring `iris-viz` has no row, shown by a synthetic omitted row.
+- Gap: atlas `a850dbc26a31` has no such script in `scripts/` and no board item names one; the hand-edited table drifted from the manifests before its last correction. Neither (a) nor (b) reads a row's revision against the member's tip: CFDrs `e522d8dd83f0` (an ancestor of tip `b76f00a72132`) declares `iris` in `[workspace.dependencies]`, `[dependencies]` and a `[patch]` table of the root manifest, the tip in `[workspace.dependencies]` only (`tomllib` scan of both revisions).
+- Oracle: (a) at each row's recorded revision the generated manifest column equals the table, failing on a hand edit; (b) a scheduled meta scan at current default commits fails when a registered member declaring `iris-viz` has no row, shown by a synthetic omitted row; (c) each row's revision is its member's default tip or an ancestor of it (`git merge-base --is-ancestor`) and the manifest column generated at the tip equals the one at that revision, shown by a synthetic CFDrs row regenerated at `e522d8dd83f0`, which passes (a) and fails (c) (derived: no generator exists to run). Wrong fix tried: checking only that the revision resolves (`git cat-file -e e522d8dd83f0`) accepts that row. Fails at the basis: no generator exists.
 - Non-goals: the "Iris items imported" prose column.
 - Next: the lead files the atlas meta item that owns the generator and links here.
-- Class: `[verification]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
+- Class: `[verification]` `[patch]`. basis: a99f4037015e3f403e36e9e4643fa47f1dd11db0.
+
+<a id="IRIS-021"></a>
+## IRIS-021 — Derive the registry example's version from the manifest
+- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
+- Outcome: the `iris = { package = "iris-viz", version = ... }` example states the version in `Cargo.toml`, and a committed check fails when they differ.
+- Scope: `docs/book/stack_position.md:59-62`, the same example in the `Cargo.toml:6` comment, a new `tools/check_registry_version.py` with its test in `tools/tests`, and one step running it in the `verify` job of `.github/workflows/ci.yml` beside the palette-fixture step.
+- Non-goals: the consumer table (IRIS-019); any version bump.
+- Gap (read and run at `a99f4037015e`): the example says `0.1.1`, `Cargo.toml:9` says `0.1.4`. crates.io, looked up 2026-11-28T00:33Z: 0.1.0 to 0.1.4, none yanked, newest 0.1.4. `0.1.1` is a valid caret requirement that resolves to 0.1.4, so the example is not unresolvable; the chapter's "Consumers write:" is false of the version, since the `iris-viz` entry in each of the four consumers' root `[workspace.dependencies]` (CFDrs `b76f00a72132`, kwavers `34fa3f47ae07`, metis `0f1cfc9bc916`, ritk `fe35fe8630ab`) reads `0.1.4`.
+- Oracle: (a) `python -I -c "import re,sys,tomllib as t;v=t.load(open('Cargo.toml','rb'))['package']['version'];s={m for f in ('docs/book/stack_position.md','Cargo.toml') for m in re.findall(r'package = \"iris-viz\", version = \"([^\"]+)\"',open(f,encoding='utf-8').read())};print(sorted(s),v);sys.exit(s!={v})"` prints `['0.1.1'] 0.1.4` and exits 1 at the basis, and exits 0 after the fix; (b) on an export of the fixed tree with `Cargo.toml:9` set to `0.1.5`, `python -I tools/check_registry_version.py` exits nonzero, and `git grep -n check_registry_version -- .github/workflows/ci.yml` matches one line (both fail at the basis: the script does not exist).
+- Wrong fix tried: replacing both literals with `0.1.4` makes (a) exit 0 (run in scratch); after a synthetic bump to 0.1.5 (planned, ADR 0003) the same command exits 1 but nothing in `ci.yml` runs it, so every job stays green; only (b) rejects that.
+- Next: write the check and its CI step, then correct both literals.
+- Class: `[docs]` `[verification]` `[patch]`. basis: a99f4037015e3f403e36e9e4643fa47f1dd11db0.
 
 <a id="IRIS-011"></a>
 ## IRIS-011 — Replace `Normalized::from_u8` with a `From` impl
