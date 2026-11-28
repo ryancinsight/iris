@@ -12,17 +12,6 @@
 - [ ] [minor] **0.2.0.** Pass the field through a real renderer. Compare palette endpoints and quantization transitions to the public color contract and verify the returned extent and buffer length.
 - [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. An external visualization caller reproduces the field-view and palette results with the supported feature set. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
 
-<a id="IRIS-018"></a>
-## IRIS-018 — Correct who supplies the `RenderBackend` implementation
-- Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
-- Outcome: `docs/book/stack_position.md` names which stack consumers implement `RenderBackend` and claims it of no other.
-- Scope: the "Where Iris Sits" paragraph (`docs/book/stack_position.md:29-30`).
-- Gap: it says consumers "supply the `RenderBackend` implementation". At default heads only metis `bbf6ffc97bad` implements it (`crates/metis-ui-lang/src/layout/display/render.rs:6`, `impl iris::render::RenderBackend<DisplayList> for Framebuffer`). `metis-frontend` and kwavers `eb91da65678b` (`kwavers-analysis/src/plotting/output.rs:2`) import it to call a backend (`iris_plot_html::HtmlPlotBackend`, a registry crate outside the member list).
-- Gap: `git grep RenderBackend` matches nothing in `CFDrs` `b76f00a72132`, `ritk` `99be8f8c2ba9` or helios `ea487343c0ad`.
-- Oracle: the sentence names metis as the implementor, and `git grep -n "impl.*RenderBackend"` matches at the default-branch commit of every repository it names; a sentence that names none, or names `CFDrs` or `ritk`, fails. Fails at the basis: it names none.
-- Non-goals: the consumer table.
-- Class: `[docs]` `[patch]`. basis: 6ac18225deb0af1631fa1a5f76cc360b5a6c6b6b.
-
 <a id="IRIS-021"></a>
 ## IRIS-021 — Derive the registry example's version from the manifest
 - Status: todo; priority: verification; milestone: M-contract-verification; needs: none.
